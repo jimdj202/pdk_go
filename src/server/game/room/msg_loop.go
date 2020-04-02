@@ -83,7 +83,7 @@ func (r *Log) Info(args ...interface{}) {
 }
 
 func (r *Log) Infof(format string, args ...interface{}) {
-	glog.InfofDepth(1, format, r.parseLog(args)...)
+	glog.Infof(format, r.parseLog(args)...)
 }
 
 func (r *Log) Error(args ...interface{}) {
@@ -100,10 +100,10 @@ func (r *Log) Debugf(format string, args ...interface{}) {
 	for k, v := range args {
 		args[k] = spew.Sdump(v)
 	}
-	glog.InfofDepth(1, format, r.parseLog(args)...)
+	glog.Infof(format, r.parseLog(args)...)
 }
 func (r *Log) Errorf(format string, args ...interface{}) {
-	glog.ErrorfDepth(1, format, r.parseLog(args)...)
+	glog.Infof(format, r.parseLog(args)...)
 }
 
 func (r *Log) parseLog(args ...interface{}) []interface{} {

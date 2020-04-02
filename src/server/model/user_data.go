@@ -2,12 +2,12 @@ package model
 
 import (
 	"fmt"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang/glog"
 	"github.com/jinzhu/gorm"
-	"time"
-	"pdk/src/server/lib/db"
-	"pdk/src/server/lib/utils"
 	"math/rand"
+	"pdk/src/server/lib/db"
+	"time"
 )
 
 func (this *User) GetByUId() (bool, error) {
@@ -30,26 +30,26 @@ func (this *User) GetByUnionId() (bool, error) {
 }
 
 type User struct {
-	Uid        uint32    `gorm:"column:uid;primary_key;unique_index;type:BIGINT"`            // 用户id
-	Account    string    `gorm:"column:account;index;unique_index;type:VARCHAR(16)"` // 客户端玩家展示的账号
-	DeviceId   string    `gorm:"column:device_id;index;type:VARCHAR(32)"`             // 设备id
+	Uid        uint32    `gorm:"column:uid;type:BIGINT;primary_key;unique_index;AUTO_INCREMENT"`            // 用户id
+	Account    string    `gorm:"column:account;type:VARCHAR(16);index;unique_index"` // 客户端玩家展示的账号
+	DeviceId   string    `gorm:"column:device_id;type:VARCHAR(32);index"`             // 设备id
 	UnionId    string    `gorm:"column:union_id;type:VARCHAR(32)"`              // 微信联合id
 	Nickname   string    `gorm:"column:nickname;type:VARCHAR(32)"`              // 微信昵称
-	Sex        uint8     `gorm:"column:sex;type:smallint"`                      // 微信性别 0-未知，1-男，2-女
+	Sex        uint8     `gorm:"column:sex;type:SMALLINT"`                      // 微信性别 0-未知，1-男，2-女
 	Profile    string    `gorm:"column:profile;type:VARCHAR(128)"`               // 微信头像
-	PhoneNum    string    `gorm:"column:profile;type:VARCHAR(20)"`               // 微信头像
-	InviteCode string    `gorm:"column:invitecode;type:VARCHAR(6)"`             // 绑定的邀请码
-	Coin       uint32    `gorm:"column:coin"`                              // 筹码
-	Lv         uint8     `gorm:"column:lv;type:smallint"`                       // 等级
-	CreatedAt  time.Time `gorm:"column:created_at;index;default:current_time"`         // 注册时间
+	PhoneNum    string    `gorm:"column:phone_num;type:VARCHAR(20)"`               // 微信头像
+	InviteCode string    `gorm:"column:invite_code;type:VARCHAR(6)"`             // 绑定的邀请码
+	Coin       uint32    `gorm:"column:coin;type:INT"`                              // 筹码
+	Lv         uint8     `gorm:"column:lv;type:SMALLINT"`                       // 等级
+	CreatedAt  time.Time `gorm:"column:created_at;default:CURRENT_TIMESTAMP"`         // 注册时间
 	LastTime   time.Time `gorm:"column:last_time"`                         // 上次登录时间
-	LastIp     uint32    `gorm:"column:last_ip;type:BIGINT"`                    // 最后登录ip
-	Kind       uint8     `gorm:"column:kind;not null;type:smallint"`           // 用户类型
-	Disable    bool      `gorm:"column:disable"`                           // 是否禁用
+	LastIp     string    `gorm:"column:last_ip;type:VARCHAR(20)"`                    // 最后登录ip
+	Kind       uint8     `gorm:"column:kind;type:SMALLINT;NOT NULL"`           // 用户类型
+	Disable    bool      `gorm:"column:disable;type:SMALLINT"`                           // 是否禁用
 	Signature  string    `gorm:"column:signature;type:VARCHAR(64)"`             // 个性签名
 	Gps        string    `gorm:"column:gps;type:VARCHAR(32)"`                   // gps定位数据
-	Black      bool      `gorm:"column:black"`                             // 黑名单列表
-	RoomID     string    `gorm:"column:room_id"`                           // 当前所在房间号，0表示不在房间,用于掉线重连
+	Black      bool      `gorm:"column:black;type:SMALLINT"`                             // 黑名单列表
+	RoomID     string    `gorm:"column:room_id;type:VARCHAR(12)"`                           // 当前所在房间号，0表示不在房间,用于掉线重连
 }
 
 func (u *User) Create() error {

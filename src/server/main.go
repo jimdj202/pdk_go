@@ -1,12 +1,15 @@
 package main
 
 import (
+	"github.com/golang/glog"
 	"github.com/name5566/leaf"
 	lconf "github.com/name5566/leaf/conf"
 	"pdk/src/server/conf"
 	"pdk/src/server/game"
 	"pdk/src/server/gate"
+	"pdk/src/server/lib/db"
 	"pdk/src/server/login"
+	"pdk/src/server/model"
 )
 
 func main() {
@@ -15,10 +18,20 @@ func main() {
 	lconf.LogFlag = conf.LogFlag
 	lconf.ConsolePort = conf.Server.ConsolePort
 	lconf.ProfilePath = conf.Server.ProfilePath
-
+	conf.Server.DBUrl = "pdk:WKwcyf66fTFKtip4@tcp(192.168.176.128:3306)/pdk?charset=utf8&parseTime=True&loc=Local"
+	db.Init(conf.Server.DBUrl)
+	createDb()
 	leaf.Run(
 		game.Module,
 		gate.Module,
 		login.Module,
 	)
+}
+
+func createDb() {
+	// 建表,只维护和服务器game里面有关的表
+	err := db.GetGormDB().AutoMigrate(&model.User{}, &model.Room{})
+	if err != nil {
+		glog.Errorln(err)
+	}
 }

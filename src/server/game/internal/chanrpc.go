@@ -13,16 +13,19 @@ func init() {
 	skeleton.RegisterChanRPC(model.Agent_Login, rpcLoginAgent)
 }
 
-func rpcNewAgent(a gate.Agent) {
+func rpcNewAgent(args []interface{}) {
+	a := args[0].(gate.Agent)
 	glog.Errorln("新建链接 ", a)
 }
 
-func rpcCloseAgent(a gate.Agent) {
+func rpcCloseAgent(args []interface{}) {
+	a := args[0].(gate.Agent)
 	glog.Errorln("链接关闭 ", a)
 }
 
-func rpcLoginAgent(u *model.User, a gate.Agent) {
-
+func rpcLoginAgent(args []interface{}) {
+	a := args[0].(gate.Agent)
+	u := args[1].(*model.User)
 	o := NewOccupant(u, a)
 	a.SetUserData(o)
 
