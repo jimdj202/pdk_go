@@ -1,15 +1,20 @@
 package room
 
 import (
-	"sync"
-	"time"
-	"strconv"
+	"github.com/name5566/leaf/gate"
 	"math/rand"
 	"pdk/src/server/protocol"
-	"github.com/name5566/leaf/gate"
+	"strconv"
+	"sync"
+	"time"
 )
 
-func OnMessage(m interface{}, a gate.Agent) {
+func OnMessage(args []interface{}) {
+	// 收到的 Hello 消息
+	m := args[0]
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+
 	o := a.UserData().(IOccupant)
 	if o.GetRoom() != nil {
 		o.GetRoom().Send(o, m)

@@ -1,13 +1,13 @@
 package internal
 
 import (
-	"reflect"
-	"pdk/src/server/protocol"
+	"github.com/golang/glog"
 	"github.com/name5566/leaf/gate"
 	"pdk/src/server/game"
-	"github.com/golang/glog"
-	"pdk/src/server/model"
 	"pdk/src/server/game/room"
+	"pdk/src/server/model"
+	"pdk/src/server/protocol"
+	"reflect"
 )
 
 func init() {
@@ -20,12 +20,21 @@ func handler(m interface{}, h interface{}) {
 	skeleton.RegisterChanRPC(reflect.TypeOf(m), h)
 }
 
-func handlVersion(m *protocol.Version, a gate.Agent) {
+func handlVersion(args []interface{}) {
+	// 收到的 Hello 消息
+	m := args[0].(*protocol.UserLoginInfoResp)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
 	glog.Infoln(m)
 	a.WriteMsg(m)
 }
 
-func handlLoginUser(m *protocol.UserLoginInfo, a gate.Agent) {
+func handlLoginUser(args []interface{}) {
+	// 收到的消息
+	m := args[0].(*protocol.UserLoginInfo)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+
 	user := &model.User{UnionId: m.UnionId}
 	exist, err := user.GetByUnionId()
 	if err != nil {
@@ -53,7 +62,11 @@ func handlLoginUser(m *protocol.UserLoginInfo, a gate.Agent) {
 	game.ChanRPC.Go(model.Agent_Login, user, a)
 }
 
-func onRoomList(m *protocol.RoomList, a gate.Agent) {
+func onRoomList(args []interface{}) {
+	// 收到的消息
+	//m := args[0].(*protocol.RoomList)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
 
 	msg := &protocol.RoomListResp{}
 
