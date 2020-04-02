@@ -45,7 +45,7 @@ func handlLoginUser(args []interface{}) {
 	if !exist {
 		user = &model.User{Nickname: m.Nickname,
 			UnionId: m.UnionId}
-		err := user.Insert()
+		err := user.Create()
 		if err != nil {
 			a.WriteMsg(protocol.MSG_User_Not_Exist)
 			return

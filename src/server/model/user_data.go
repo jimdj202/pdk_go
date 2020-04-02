@@ -3,93 +3,111 @@ package model
 import (
 	"fmt"
 	"github.com/golang/glog"
+	"github.com/jinzhu/gorm"
 	"time"
-	"github.com/dolotech/lib/db"
-	"github.com/dolotech/lib/utils"
+	"pdk/src/server/lib/db"
+	"pdk/src/server/lib/utils"
 	"math/rand"
 )
 
-func (this *User) GetById() (bool, error) {
-	return db.C().Engine().Where("uid = ?", this.Uid).Get(this)
+func (this *User) GetByUId() (bool, error) {
+	//return db.C().Engine().Where("uid = ?", this.Uid).Get(this)
+	db := db.GetGormDB().Find(this)
+	return db.RowsAffected > 0,db.Error
 }
 
+
 func (this *User) GetByAccount() (bool, error) {
-	return db.C().Engine().Where("account = ?", this.Account).Get(this)
+	//return db.C().Engine().Where("account = ?", this.Account).Get(this)
+	db := db.GetGormDB().Where("account = ?",this.Account).Find(this)
+	return db.RowsAffected > 0,db.Error
 }
 
 func (this *User) GetByUnionId() (bool, error) {
-	return db.C().Engine().Where("union_id = ?", this.UnionId).Get(this)
+	//return db.C().Engine().Where("union_id = ?", this.UnionId).Get(this)
+	db := db.GetGormDB().Where("union_id = ?",this.Account).Find(this)
+	return db.RowsAffected > 0,db.Error
 }
 
 type User struct {
-	Uid        uint32    `xorm:"'uid' pk autoincr BIGINT"`            // 用户id
-	Account    string    `xorm:"'account' index unique  VARCHAR(16)"` // 客户端玩家展示的账号
-	DeviceId   string    `xorm:"'device_id' VARCHAR(32)"`             // 设备id
-	UnionId    string    `xorm:"'union_id' VARCHAR(32)"`              // 微信联合id
-	Nickname   string    `xorm:"'nickname' VARCHAR(32)"`              // 微信昵称
-	Sex        uint8     `xorm:"'sex' smallint"`                      // 微信性别 0-未知，1-男，2-女
-	Profile    string    `xorm:"'profile' VARCHAR(64)"`               // 微信头像
-	Invitecode string    `xorm:"'invitecode' VARCHAR(6)"`             // 绑定的邀请码
-	Coin       uint32    `xorm:"'coin'"`                              // 筹码
-	Lv         uint8     `xorm:"'lv' smallint"`                       // 等级
-	CreatedAt  time.Time `xorm:"'created_at' index  created"`         // 注册时间
-	LastTime   time.Time `xorm:"'last_time'"`                         // 上次登录时间
-	LastIp     uint32    `xorm:"'last_ip' BIGINT"`                    // 最后登录ip
-	Kind       uint8     `xorm:"'kind'  not null smallint"`           // 用户类型
-	Disable    bool      `xorm:"'disable'"`                           // 是否禁用
-	Signature  string    `xorm:"'signature' VARCHAR(64)"`             // 个性签名
-	Gps        string    `xorm:"'gps' VARCHAR(32)"`                   // gps定位数据
-	Black      bool      `xorm:"'black'"`                             // 黑名单列表
-	RoomID     string    `xorm:"'room_id'"`                           // 当前所在房间号，0表示不在房间,用于掉线重连
+	Uid        uint32    `gorm:"column:uid;primary_key;unique_index;type:BIGINT"`            // 用户id
+	Account    string    `gorm:"column:account;index;unique_index;type:VARCHAR(16)"` // 客户端玩家展示的账号
+	DeviceId   string    `gorm:"column:device_id;index;type:VARCHAR(32)"`             // 设备id
+	UnionId    string    `gorm:"column:union_id;type:VARCHAR(32)"`              // 微信联合id
+	Nickname   string    `gorm:"column:nickname;type:VARCHAR(32)"`              // 微信昵称
+	Sex        uint8     `gorm:"column:sex;type:smallint"`                      // 微信性别 0-未知，1-男，2-女
+	Profile    string    `gorm:"column:profile;type:VARCHAR(128)"`               // 微信头像
+	PhoneNum    string    `gorm:"column:profile;type:VARCHAR(20)"`               // 微信头像
+	InviteCode string    `gorm:"column:invitecode;type:VARCHAR(6)"`             // 绑定的邀请码
+	Coin       uint32    `gorm:"column:coin"`                              // 筹码
+	Lv         uint8     `gorm:"column:lv;type:smallint"`                       // 等级
+	CreatedAt  time.Time `gorm:"column:created_at;index;default:current_time"`         // 注册时间
+	LastTime   time.Time `gorm:"column:last_time"`                         // 上次登录时间
+	LastIp     uint32    `gorm:"column:last_ip;type:BIGINT"`                    // 最后登录ip
+	Kind       uint8     `gorm:"column:kind;not null;type:smallint"`           // 用户类型
+	Disable    bool      `gorm:"column:disable"`                           // 是否禁用
+	Signature  string    `gorm:"column:signature;type:VARCHAR(64)"`             // 个性签名
+	Gps        string    `gorm:"column:gps;type:VARCHAR(32)"`                   // gps定位数据
+	Black      bool      `gorm:"column:black"`                             // 黑名单列表
+	RoomID     string    `gorm:"column:room_id"`                           // 当前所在房间号，0表示不在房间,用于掉线重连
 }
 
-func (u *User) Insert() error {
-	_, err := db.C().Engine().InsertOne(u)
-	if err != nil {
-		glog.Errorln(err)
-		return err
+func (u *User) Create() error {
+
+	n := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(999999-100000) + 100000
+	u.Account = fmt.Sprintf("%v", n)
+	u.Uid = uint32(n)
+	for{
+		exist,err:= u.GetByUId()
+		if err!= nil {
+			return err
+		}
+		if !exist {
+			break
+		}
+		n := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(999999-100000) + 100000
+		u.Account = fmt.Sprintf("%v", n)
 	}
 
-	n := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(9999-1000) + 1000
-
-	account := fmt.Sprintf("%v%v", u.Uid, n)
-	sql := `UPDATE public.user SET account =$1 WHERE uid = $2 `
-	_, err = db.C().Engine().Exec(sql, account, u.Uid)
-	if err != nil {
-		glog.Errorln(err)
-		return err
+	db := db.GetGormDB().Create(u)
+	if db.Error != nil {
+		glog.Errorln(db.Error)
+		return db.Error
 	}
-	glog.Errorln(u)
+
 	return nil
 }
 func (u *User) UpdateChips(value int32) error {
-	_, err := db.C().Engine().Exec(`UPDATE public.user SET
-		chips = chips + $1 WHERE uid =$2 `, value, u.Uid)
-	if err != nil {
-		glog.Errorln(err)
-	}
+	//_, err := db.C().Engine().Exec(`UPDATE public.user SET
+	//	chips = chips + $1 WHERE uid =$2 `, value, u.Uid)
 
-	return err
+	db := db.GetGormDB().Model(u).Update("chips",gorm.Expr("chips + ?", value))
+	if db.Error != nil {
+		glog.Errorln(db.Error)
+	}
+	return db.Error
 	//s:=db.C().Engine().Table(u).Incr("chips",value)
 	//return nil
 }
 
-func (u *User) UpdateLogin(ip string) error {
-	sql := `UPDATE public.user SET
-	last_time =  $1 ,last_ip =  $2 WHERE uid = $3 `
-	_, err := db.C().Engine().Exec(sql, time.Now(), utils.InetToaton(ip), u.Uid)
-	if err != nil {
-		glog.Errorln(err)
-	}
-	return err
+func (u *User) UpdateLoginTime(ip string) error {
+	//sql := `UPDATE public.user SET
+	//last_time =  $1 ,last_ip =  $2 WHERE uid = $3 `
+	//_, err := db.C().Engine().Exec(sql, time.Now(), utils.InetToaton(ip), u.Uid)
+	//if err != nil {
+	//	glog.Errorln(err)
+	//}
+	db := db.GetGormDB().Model(u).Update("last_time",time.Now().Unix)
+	return db.Error
 }
 
 func (u *User) UpdateRoomId() error {
-	sql := `UPDATE public.user SET
-	room_id =  $1 WHERE uid = $2 `
-	_, err := db.C().Engine().Exec(sql, u.RoomID, u.Uid)
-	if err != nil {
-		glog.Errorln(err)
-	}
-	return err
+	//sql := `UPDATE public.user SET
+	//room_id =  $1 WHERE uid = $2 `
+	//_, err := db.C().Engine().Exec(sql, u.RoomID, u.Uid)
+	//if err != nil {
+	//	glog.Errorln(err)
+	//}
+	db := db.GetGormDB().Model(u).Update("room_id",u.RoomID)
+	return db.Error
 }
