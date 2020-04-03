@@ -29,7 +29,7 @@ func (u *Room) Insert() (int64, error) {
 }
 
 func (this *Room) GetById() (bool, error) {
-	db := db.GetGormDB().Where("uid = ?", this.Rid).Find(this)
+	db := db.GetGormDB().Where("rid = ?", this.Rid).Find(this)
 	return db.RowsAffected>0,db.Error
 }
 
