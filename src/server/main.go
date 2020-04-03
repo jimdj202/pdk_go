@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/golang/glog"
 	"github.com/name5566/leaf"
 	lconf "github.com/name5566/leaf/conf"
@@ -13,6 +14,10 @@ import (
 )
 
 func main() {
+	//Init the command-line flags. for glog
+	flag.Parse()
+	defer glog.Flush()
+
 	lconf.LogLevel = conf.Server.LogLevel
 	lconf.LogPath = conf.Server.LogPath
 	lconf.LogFlag = conf.LogFlag

@@ -53,7 +53,7 @@ func handlLoginUser(args []interface{}) {
 		}
 	}else {
 		//更新最近登录时间
-		user.UpdateLoginTimeIp("192.168.0.1")
+		user.UpdateLoginTimeIp(a.LocalAddr().String())
 	}
 
 	resp := &protocol.UserLoginInfoResp{
