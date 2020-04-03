@@ -17,6 +17,8 @@ func main() {
 	//Init the command-line flags. for glog
 	flag.Parse()
 	defer glog.Flush()
+	//flag.Lookup("alsologtostderr").Value.Set("true")
+	//flag.Lookup("log_dir").Value.Set("./log/")
 
 	lconf.LogLevel = conf.Server.LogLevel
 	lconf.LogPath = conf.Server.LogPath
@@ -25,6 +27,7 @@ func main() {
 	lconf.ProfilePath = conf.Server.ProfilePath
 	conf.Server.DBUrl = "pdk:WKwcyf66fTFKtip4@tcp(192.168.176.128:3306)/pdk?charset=utf8&parseTime=True&loc=Local"
 	db.Init(conf.Server.DBUrl)
+
 	//createDb()
 	leaf.Run(
 		game.Module,
