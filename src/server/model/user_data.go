@@ -13,7 +13,7 @@ import (
 func (this *User) GetByUId() (bool, error) {
 	//return db.C().Engine().Where("uid = ?", this.Uid).Get(this)
 	db := db.GetGormDB().Find(this)
-	return db.RowsAffected > 0,db.Error
+	return db.RowsAffected > 0,nil
 }
 
 
@@ -25,8 +25,8 @@ func (this *User) GetByAccount() (bool, error) {
 
 func (this *User) GetByUnionId() (bool, error) {
 	//return db.C().Engine().Where("union_id = ?", this.UnionId).Get(this)
-	db := db.GetGormDB().Where("union_id = ?",this.Account).Find(this)
-	return db.RowsAffected > 0,db.Error
+	db := db.GetGormDB().Where("union_id = ?",this.UnionId).Find(this)
+	return db.RowsAffected > 0, nil
 }
 
 type User struct {
@@ -90,14 +90,14 @@ func (u *User) UpdateChips(value int32) error {
 	//return nil
 }
 
-func (u *User) UpdateLoginTime(ip string) error {
+func (u *User) UpdateLoginTimeIp(ip string) error {
 	//sql := `UPDATE public.user SET
 	//last_time =  $1 ,last_ip =  $2 WHERE uid = $3 `
 	//_, err := db.C().Engine().Exec(sql, time.Now(), utils.InetToaton(ip), u.Uid)
 	//if err != nil {
 	//	glog.Errorln(err)
 	//}
-	db := db.GetGormDB().Model(u).Update("last_time",time.Now().Unix)
+	db := db.GetGormDB().Model(u).Update(User{LastTime:time.Now(),LastIp:ip})
 	return db.Error
 }
 

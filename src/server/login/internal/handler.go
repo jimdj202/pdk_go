@@ -8,6 +8,7 @@ import (
 	"pdk/src/server/model"
 	"pdk/src/server/protocol"
 	"reflect"
+	"time"
 )
 
 func init() {
@@ -44,12 +45,15 @@ func handlLoginUser(args []interface{}) {
 
 	if !exist {
 		user = &model.User{Nickname: m.Nickname,
-			UnionId: m.UnionId}
+			UnionId: m.UnionId,LastTime:time.Now()}
 		err := user.Create()
 		if err != nil {
 			a.WriteMsg(protocol.MSG_User_Not_Exist)
 			return
 		}
+	}else {
+		//更新最近登录时间
+		user.UpdateLoginTimeIp("192.168.0.1")
 	}
 
 	resp := &protocol.UserLoginInfoResp{
@@ -59,7 +63,7 @@ func handlLoginUser(args []interface{}) {
 	}
 
 	a.WriteMsg(resp)
-	game.ChanRPC.Go(model.Agent_Login, user, a)
+	game.ChanRPC.Go(model.Agent_Login, a,user)
 }
 
 func onRoomList(args []interface{}) {

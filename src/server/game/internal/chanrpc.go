@@ -15,12 +15,12 @@ func init() {
 
 func rpcNewAgent(args []interface{}) {
 	a := args[0].(gate.Agent)
-	glog.Errorln("新建链接 ", a)
+	glog.Infof("新建链接 %T", a)
 }
 
 func rpcCloseAgent(args []interface{}) {
 	a := args[0].(gate.Agent)
-	glog.Errorln("链接关闭 ", a)
+	glog.Infof("链接关闭 %T", a)
 }
 
 func rpcLoginAgent(args []interface{}) {
@@ -32,5 +32,5 @@ func rpcLoginAgent(args []interface{}) {
 	if len(u.RoomID) > 0 {
 		o.room = room.GetRoom(u.RoomID)
 	}
-	glog.Errorln("rpcLoginAgent", u)
+	glog.Infof("rpcLoginAgent %T", u)
 }
