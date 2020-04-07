@@ -1,12 +1,12 @@
-package room
+package internal
 
 import (
+	"errors"
+	"github.com/davecgh/go-spew/spew"
+	"github.com/golang/glog"
+	"pdk/src/server/lib/route"
 	"pdk/src/server/lib/utils"
 	"pdk/src/server/protocol"
-	"errors"
-	"pdk/src/server/lib/route"
-	"github.com/golang/glog"
-	"github.com/davecgh/go-spew/spew"
 )
 
 type MsgLoop struct {

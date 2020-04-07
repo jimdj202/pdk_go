@@ -1,12 +1,11 @@
 package internal
 
 import (
+	"github.com/golang/glog"
+	"pdk/src/server/algorithm"
 	"pdk/src/server/model"
 	"pdk/src/server/protocol"
-	"pdk/src/server/algorithm"
 	"time"
-	"pdk/src/server/game/room"
-	"github.com/golang/glog"
 )
 
 const (
@@ -16,8 +15,8 @@ const (
 
 type Room struct {
 	*model.Room
-	*room.MsgLoop
-	*room.Log
+	*MsgLoop
+	*Log
 	Occupants   []*Occupant
 	observes    []*Occupant // 站起的玩家
 	AutoSitdown []*Occupant // 自动坐下队列
@@ -47,7 +46,7 @@ func NewRoom(max uint8, sb, bb uint32, chips uint32, timeout uint8) *Room {
 
 	r := &Room{
 		Room:      &model.Room{DraginChips: chips,},
-		MsgLoop:   room.NewMsgLoop(),
+		MsgLoop:   NewMsgLoop(),
 		Chips:     make([]uint32, max),
 		Occupants: make([]*Occupant, max),
 		Pot:       make([]uint32, 0, max),
@@ -57,7 +56,7 @@ func NewRoom(max uint8, sb, bb uint32, chips uint32, timeout uint8) *Room {
 		Max:       max,
 	}
 
-	r.Log = room.NewLog(r)
+	r.Log = NewLog(r)
 	r.Regist(&protocol.JoinRoom{}, r.joinRoom)
 	r.Regist(&protocol.LeaveRoom{}, r.leaveRoom)
 	r.Regist(&protocol.Bet{}, r.bet)
@@ -74,14 +73,14 @@ type startDelay struct {
 	kind uint8
 }
 
-func (r *Room) New(m interface{}) room.IRoom {
+func (r *Room) New(m interface{}) IRoom {
 	glog.Errorln(r, m)
 	if msg, ok := m.(*protocol.JoinRoom); ok {
 		if len(msg.RoomNumber) == 0 {
-			r := room.FindRoom()
+			r := FindRoom()
 			return r
 		}
-		r := room.GetRoom(msg.RoomNumber)
+		r := GetRoom(msg.RoomNumber)
 		if r != nil {
 			return r
 		}

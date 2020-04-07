@@ -1,4 +1,4 @@
-package room
+package internal
 
 type IOccupant interface {
 	GetRoom() IRoom

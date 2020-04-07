@@ -1,10 +1,9 @@
 package internal
 
 import (
-	"github.com/name5566/leaf/gate"
 	"github.com/golang/glog"
+	"github.com/name5566/leaf/gate"
 	"pdk/src/server/model"
-	"pdk/src/server/game/room"
 )
 
 func init() {
@@ -30,7 +29,7 @@ func rpcLoginAgent(args []interface{}) {
 	a.SetUserData(o)
 
 	if len(u.RoomID) > 0 {
-		o.room = room.GetRoom(u.RoomID)
+		o.room = GetRoom(u.RoomID)
 	}
 	glog.Infof("rpcLoginAgent %T", u)
 }

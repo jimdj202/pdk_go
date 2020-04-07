@@ -4,7 +4,7 @@ import (
 	"github.com/golang/glog"
 	"github.com/name5566/leaf/gate"
 	"pdk/src/server/game"
-	"pdk/src/server/game/room"
+	//"pdk/src/server/game/internal"
 	"pdk/src/server/model"
 	"pdk/src/server/protocol"
 	"reflect"
@@ -74,7 +74,8 @@ func onRoomList(args []interface{}) {
 
 	msg := &protocol.RoomListResp{}
 
-	array := room.GetRooms()
+	//array := internal.GetRooms()
+	array := game.GetRoomsEx()
 	rooms := make([]*protocol.Room, len(array))
 
 	for k, v := range array {

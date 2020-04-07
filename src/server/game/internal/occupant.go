@@ -1,18 +1,17 @@
 package internal
 
 import (
-	"pdk/src/server/model"
+	"errors"
 	"github.com/name5566/leaf/gate"
 	"pdk/src/server/algorithm"
+	"pdk/src/server/model"
 	"time"
-	"errors"
-	"pdk/src/server/game/room"
 )
 
 type Occupant struct {
 	*model.User
 	gate.Agent
-	room   room.IRoom
+	room   IRoom
 	cards  algorithm.Cards
 	Pos    uint8 // 玩家座位号，从1开始
 	status int32 // 1为离线状态
@@ -32,10 +31,10 @@ const (
 	Occupant_status_Sitdown int32 = 0
 )
 
-func (o *Occupant) GetRoom() room.IRoom {
+func (o *Occupant) GetRoom() IRoom {
 	return o.room
 }
-func (o *Occupant) SetRoom(m room.IRoom) {
+func (o *Occupant) SetRoom(m IRoom) {
 	o.room = m
 }
 func (o *Occupant) SetAction(n int32)error {

@@ -1,8 +1,9 @@
-package room
+package internal
 
 import (
 	"github.com/name5566/leaf/gate"
 	"math/rand"
+	"pdk/src/server/model"
 	"pdk/src/server/protocol"
 	"strconv"
 	"sync"
@@ -19,7 +20,7 @@ func OnMessage(args []interface{}) {
 	if o.GetRoom() != nil {
 		o.GetRoom().Send(o, m)
 	} else {
-		if r := hand.Create(m); r == nil {
+		if r := CreateRoom(m); r == nil {
 			a.WriteMsg(protocol.MSG_NOT_IN_ROOM)
 		} else {
 			SetRoom(r)
@@ -30,7 +31,7 @@ func OnMessage(args []interface{}) {
 
 var rooms *roomlist
 
-var hand ICreator
+
 
 func init() {
 	rooms = &roomlist{
@@ -38,13 +39,26 @@ func init() {
 	}
 }
 
-func Init(h ICreator) {
-	hand = h
-}
-
 type roomlist struct {
 	M map[string]IRoom
 	sync.RWMutex
+}
+
+func CreateRoom(m interface{}) IRoom {
+	if msg, ok := m.(*protocol.JoinRoom); ok {
+		if len(msg.RoomNumber) == 0 {
+			r := FindRoom()
+			return r
+		}
+		r := GetRoom(msg.RoomNumber)
+		if r != nil {
+			return r
+		}
+		room := NewRoom(9, 5, 10, 1000, model.Timeout)
+		room.Insert()
+		return room
+	}
+	return nil
 }
 
 func FindRoom() IRoom {
