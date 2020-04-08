@@ -24,6 +24,7 @@ type Room struct {
 }
 
 func (u *Room) Insert() (int64, error) {
+	//用来存放 回放数据等等
 	db := db.GetGormDB().Create(u)
 	return db.RowsAffected,db.Error
 }

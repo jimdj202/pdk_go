@@ -10,6 +10,24 @@ import (
 	"time"
 )
 
+func OnMessageCreateRoom(args []interface{}){
+	// 收到的 Hello 消息
+	m := args[0]
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+	if msg, ok := m.(*protocol.CreateRoom); ok {
+		num :=rooms.createNumber()
+
+		room := NewRoom(9, msg.TotalPersion, 10, 1000, model.Timeout)
+		room.SetNumber(num)
+		room.Insert()
+
+		a.WriteMsg(&protocol.CreateRoomResp{})
+		return
+	}
+	a.WriteMsg(&protocol.CreateRoomResp{})
+}
+
 func OnMessage(args []interface{}) {
 	// 收到的 Hello 消息
 	m := args[0]

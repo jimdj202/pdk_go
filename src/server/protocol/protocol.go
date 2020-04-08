@@ -136,7 +136,11 @@ type LeaveRoom struct {
 }
 
 type CreateRoom struct {
+	TotalPersion uint32
+}
 
+type CreateRoomResp struct {
+	TotalPersion uint32
 }
 
 type JoinRoom struct {
