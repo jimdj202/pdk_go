@@ -70,6 +70,7 @@ func (r *Room) start() {
 
 	// 小大盲下注
 	r.betting(sb, int32(r.SB))
+	//time.Sleep(time.Second)
 	r.betting(bb, int32(r.BB))
 
 	// Round 1 : preflop

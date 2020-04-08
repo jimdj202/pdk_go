@@ -135,6 +135,10 @@ type LeaveRoom struct {
 	Uid        uint32
 }
 
+type CreateRoom struct {
+
+}
+
 type JoinRoom struct {
 	Uid        uint32
 	RoomNumber string
