@@ -26,3 +26,9 @@ func TestQinYouQuan_FindAllByUid(t *testing.T) {
 	list, err := qin.FindAllByUid()
 	fmt.Println("TestQinYouQuan_FindOne:",list,err,qin)
 }
+
+func TestQinYouQuan_GetCountsByUid(t *testing.T) {
+	qin := &QinYouQuan{Uid: 12345}
+	list, err := qin.GetCountsByUid()
+	fmt.Println("TestQinYouQuan_GetCountsByUid:",list,err,qin)
+}

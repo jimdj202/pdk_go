@@ -2,6 +2,7 @@ package model
 
 //亲友圈基本信息
 import (
+	"errors"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 	"math/rand"
@@ -74,4 +75,10 @@ func (q *QinYouQuan) FindAllByUid()(* []QinYouQuan,error)  {
 	return &qs,dbResult.Error
 }
 
-
+func (q *QinYouQuan) GetCountsByUid()(int64,error)  {
+	if q.Uid < 1 {
+		return 0,errors.New("请输入Uid")
+	}
+	dbResult := db.GetGormDB().Find(q)
+	return  dbResult.RowsAffected,dbResult.Error
+}
