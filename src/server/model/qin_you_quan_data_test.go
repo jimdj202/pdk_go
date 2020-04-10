@@ -10,8 +10,8 @@ func init() {
 }
 
 func TestQinYouQuan_Create(t *testing.T) {
-	qin := &QinYouQuan{Qid: 12345,
-		Name: "跑得快"}
+	qin := &QinYouQuan{Qid: 123555,
+		Name: "跑得快555"}
 	qin.Create()
 }
 

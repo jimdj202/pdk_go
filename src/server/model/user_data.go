@@ -30,7 +30,7 @@ func (this *User) GetByUnionId() (bool, error) {
 }
 
 type User struct {
-	Uid        uint32    `gorm:"column:uid;type:BIGINT;primary_key;unique_index;AUTO_INCREMENT"`            // 用户id
+	Uid        uint32    `gorm:"column:uid;type:BIGINT AUTO_INCREMENT;primary_key;unique_index"`            // 用户id
 	Account    string    `gorm:"column:account;type:VARCHAR(16);index;unique_index"` // 客户端玩家展示的账号
 	DeviceId   string    `gorm:"column:device_id;type:VARCHAR(32);index"`             // 设备id
 	UnionId    string    `gorm:"column:union_id;type:VARCHAR(32)"`              // 微信联合id

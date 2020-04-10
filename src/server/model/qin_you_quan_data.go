@@ -9,7 +9,7 @@ import (
 )
 
 type QinYouQuan struct {
-	ID        uint32 `gorm:"primary_key;AUTO_INCREMENT;index;unique_index;type:BIGINT"`
+	ID        uint32 `gorm:"primary_key;index;type:BIGINT AUTO_INCREMENT"`
 	Qid 	  uint32 `gorm:"primary_key;index;type:MEDIUMINT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time

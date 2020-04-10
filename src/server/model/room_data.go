@@ -9,7 +9,7 @@ import (
 //房间基本信息
 
 type Room struct {
-	Rid             uint32    `gorm:"column:rid;primary_key;AUTO_INCREMENT;index;unique_index;type:BIGINT"`
+	ID             uint32    `gorm:"column:rid;primary_key;index;unique_index;type:BIGINT AUTO_INCREMENT"`
 	Number          string    `gorm:"column:number;index;not null;type:VARCHAR(8)"` // 给玩家展示的房间号
 	Pwd             string    `gorm:"column:pwd;type:VARCHAR(16)"`                  //房间锁--密码
 	State           uint8     `gorm:"column:state;type:SMALLINT"`                   //房间状态 0默认可用 1不可用

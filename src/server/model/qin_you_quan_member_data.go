@@ -6,7 +6,7 @@ import (
 )
 
 type QinYouQuanMember struct {
-	ID        uint32 `gorm:"primary_key;AUTO_INCREMENT;type:BIGINT"`
+	ID        uint32 `gorm:"primary_key;type:BIGINT AUTO_INCREMENT"`
 	CreatedAt time.Time
 	Qid		uint32 `gorm:"primary_key;index;type:MEDIUMINT"`
 	Uid		uint32 `gorm:"primary_key;index;type:BIGINT"`
