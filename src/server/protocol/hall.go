@@ -44,3 +44,13 @@ type CreateRoomResp struct {
 	TotalPersion uint32
 	RoomNum string
 }
+
+func init() {
+	Processor.Register(&Hello{})
+	Processor.Register(&UserLoginInfo{})
+	Processor.Register(&UserLoginInfoResp{})
+
+	Processor.Register(&CodeState{})
+	Processor.Register(&Version{})
+
+}

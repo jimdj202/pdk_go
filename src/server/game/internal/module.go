@@ -18,7 +18,7 @@ func handler(m interface{}, h interface{}) {
 }
 func init() {
 	handler(&protocol.CreateRoom{}, OnMessageCreateRoom)
-	handler(&protocol.CreateRoom{}, OnMessageCreateRoom)
+	//handler(&protocol.CreateRoom{}, OnMessageCreateRoom)
 
 
 

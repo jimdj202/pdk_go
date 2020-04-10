@@ -31,32 +31,32 @@ var (
 )
 
 func init() {
-	Processor.Register(&Hello{})
-	Processor.Register(&UserLoginInfo{})
-	Processor.Register(&UserLoginInfoResp{})
-
-	Processor.Register(&CodeState{})
-	Processor.Register(&Version{})
-
-	//房间会话注册
-	Processor.Register(&RoomInfo{})  //基本信息
-	Processor.Register(&JoinRoom{})  //
-	Processor.Register(&LeaveRoom{}) //
-
-	Processor.Register(&Showdown{})
-	Processor.Register(&PreFlop{})
-	Processor.Register(&Pot{})
-	Processor.Register(&Bet{})
-	Processor.Register(&Button{})
-	Processor.Register(&StandUp{})
-	Processor.Register(&SitDown{})
-	Processor.Register(&UserInfo{})
-	Processor.Register(&JoinRoomResp{})
-	Processor.Register(&JoinRoomBroadcast{})
-	Processor.Register(&BetResp{})
-	Processor.Register(&RoomList{})
-	Processor.Register(&RoomListResp{})
-	Processor.Register(&Chat{})
+	//Processor.Register(&Hello{})
+	//Processor.Register(&UserLoginInfo{})
+	//Processor.Register(&UserLoginInfoResp{})
+	//
+	//Processor.Register(&CodeState{})
+	//Processor.Register(&Version{})
+	//
+	////房间会话注册
+	//Processor.Register(&RoomInfo{})  //基本信息
+	//Processor.Register(&JoinRoom{})  //
+	//Processor.Register(&LeaveRoom{}) //
+	//
+	//Processor.Register(&Showdown{})
+	//Processor.Register(&PreFlop{})
+	//Processor.Register(&Pot{})
+	//Processor.Register(&Bet{})
+	//Processor.Register(&Button{})
+	//Processor.Register(&StandUp{})
+	//Processor.Register(&SitDown{})
+	//Processor.Register(&UserInfo{})
+	//Processor.Register(&JoinRoomResp{})
+	//Processor.Register(&JoinRoomBroadcast{})
+	//Processor.Register(&BetResp{})
+	//Processor.Register(&RoomList{})
+	//Processor.Register(&RoomListResp{})
+	//Processor.Register(&Chat{})
 }
 
 
