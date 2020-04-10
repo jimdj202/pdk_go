@@ -18,6 +18,11 @@ func handler(m interface{}, h interface{}) {
 }
 func init() {
 	handler(&protocol.CreateRoom{}, OnMessageCreateRoom)
+	handler(&protocol.CreateRoom{}, OnMessageCreateRoom)
+
+
+
+	///////////以下协议为房间内协议
 	handler(&protocol.JoinRoom{}, OnMessage)
 	handler(&protocol.LeaveRoom{}, OnMessage)
 	handler(&protocol.Bet{}, OnMessage)

@@ -17,12 +17,11 @@ func OnMessageCreateRoom(args []interface{}){
 	a := args[1].(gate.Agent)
 	if msg, ok := m.(*protocol.CreateRoom); ok {
 		num :=rooms.createNumber()
-
 		room := NewRoom(9, msg.TotalPersion, 10, 1000, model.Timeout)
 		room.SetNumber(num)
 		room.Insert()
 
-		a.WriteMsg(&protocol.CreateRoomResp{})
+		a.WriteMsg(&protocol.CreateRoomResp{RoomNum:num})
 		return
 	}
 	a.WriteMsg(&protocol.CreateRoomResp{})
