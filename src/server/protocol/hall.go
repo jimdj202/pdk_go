@@ -32,3 +32,15 @@ type UserLoginInfoResp struct {
 	Chips    uint32 // 筹码
 }
 
+type CreateRoom struct {
+	ToomType uint32 `房间类型:跑得快,四川麻将等等`
+	IsQinYouQuan bool
+	QinYouQuanNum string
+	CreatePdkRoomConf
+
+}
+
+type CreateRoomResp struct {
+	TotalPersion uint32
+	RoomNum string
+}

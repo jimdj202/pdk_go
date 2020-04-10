@@ -45,18 +45,11 @@ type LeaveRoom struct {
 	Uid        uint32
 }
 
-
-type CreateRoom struct {
-	TotalPersion uint32
-	IsQinYouQuan bool
-	QinYouQuanNum string
-
+type CreatePdkRoomConf struct {
+	TotalPersionNum uint32
+	
 }
 
-type CreateRoomResp struct {
-	TotalPersion uint32
-	RoomNum string
-}
 
 type JoinRoom struct {
 	Uid        uint32
