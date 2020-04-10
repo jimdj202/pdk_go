@@ -8,20 +8,9 @@ import (
 func BenchmarkCreateNumber(b *testing.B) {
 	for i:=0;i<b.N;i++{
 
-		b.Log(createNumber())
+		//b.Log(createNumber())
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 func Benchmark_map(b *testing.B) {

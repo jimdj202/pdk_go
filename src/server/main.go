@@ -38,7 +38,8 @@ func main() {
 
 func createDb() {
 	// 建表,只维护和服务器game里面有关的表
-	err := db.GetGormDB().AutoMigrate(&model.User{}, &model.Room{})
+	//err := db.GetGormDB().AutoMigrate(&model.User{}, &model.Room{},&model.QinYouQuan{},&model.QinYouQuanMember{})
+	err := db.GetGormDB().AutoMigrate(&model.QinYouQuan{},&model.QinYouQuanMember{})
 	if err != nil {
 		glog.Errorln(err)
 	}

@@ -13,7 +13,7 @@ func TestUser_UpdateChips2(t *testing.T) {
 
 func TestUser_Insert(t *testing.T) {
 	user:= &User{Nickname:"Michael",UnionId:"aaasdfasd"}
-	t.Log(user.Insert(),user)
+	t.Log(user.Create(),user)
 }
 
 func BenchmarkUser_Insert(b *testing.B) {

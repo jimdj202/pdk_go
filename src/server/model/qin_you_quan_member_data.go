@@ -30,3 +30,9 @@ func (q *QinYouQuanMember) DeleteByQid() (int64,error) {
 	dbResult := db.GetGormDB().Where("qid = ? AND uid = ? ",q.Qid,q.Uid).Delete(QinYouQuanMember{})
 	return dbResult.RowsAffected,dbResult.Error
 }
+
+func (q *QinYouQuanMember) GetMembersByQid()( *[]QinYouQuanMember,error)  {
+	var mebs  []QinYouQuanMember
+	dbResult := db.GetGormDB().Where("qid = ?",q.Qid).Find(&mebs)
+	return &mebs,dbResult.Error
+}

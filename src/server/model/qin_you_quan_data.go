@@ -49,4 +49,7 @@ func (q *QinYouQuan) Delete() error {
 	})
 }
 
-
+func (q *QinYouQuan) FindOneByQid()(int64,error)  {
+	dbResult := db.GetGormDB().Where("qid = ?",q.Qid).First(q)
+	return dbResult.RowsAffected,dbResult.Error
+}
