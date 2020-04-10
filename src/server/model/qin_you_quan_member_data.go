@@ -13,6 +13,7 @@ type QinYouQuanMember struct {
 	Qname   string `gorm:"type:VARCHAR(16)"`
 	Uname	string `gorm:"type:VARCHAR(16)"`
 	Status  uint8 `gorm:"type:SMALLINT"`
+	IsManager uint8 `gorm:"type:SMALLINT"`
 
 }
 

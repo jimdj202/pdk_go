@@ -10,8 +10,8 @@ func init() {
 }
 
 func TestQinYouQuan_Create(t *testing.T) {
-	qin := &QinYouQuan{Qid: 1234555,
-		Name: "跑得快555"}
+	qin := &QinYouQuan{Uid: 12345,
+		Name: "跑得快5556"}
 	qin.Create()
 }
 
@@ -19,4 +19,10 @@ func TestQinYouQuan_FindOne(t *testing.T) {
 	qin := &QinYouQuan{Qid: 12345}
 	count, err := qin.FindOneByQid()
 	fmt.Println("TestQinYouQuan_FindOne:",count,err,qin)
+}
+
+func TestQinYouQuan_FindAllByUid(t *testing.T) {
+	qin := &QinYouQuan{Uid: 12345}
+	list, err := qin.FindAllByUid()
+	fmt.Println("TestQinYouQuan_FindOne:",list,err,qin)
 }

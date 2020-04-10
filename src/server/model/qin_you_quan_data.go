@@ -12,10 +12,13 @@ import (
 type QinYouQuan struct {
 	//ID        uint32 `gorm:"primary_key;index;type:BIGINT AUTO_INCREMENT"`
 	Qid 	  uint32 `gorm:"primary_key;index;type:MEDIUMINT"`
+	Uid 	  uint32 `gorm:"primary_key;index;type:MEDIUMINT"`
+	Name		string `gorm:"type:VARCHAR(16)"`
+
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt *time.Time `sql:"index"`
-	Name		string `gorm:"type:VARCHAR(16)"`
+
 
 
 }
@@ -64,3 +67,11 @@ func (q *QinYouQuan) FindOneByQid()(int64,error)  {
 	dbResult := db.GetGormDB().Where("qid = ?",q.Qid).First(q)
 	return dbResult.RowsAffected,dbResult.Error
 }
+
+func (q *QinYouQuan) FindAllByUid()(* []QinYouQuan,error)  {
+	var qs []QinYouQuan
+	dbResult := db.GetGormDB().Where("uid = ?",q.Uid).Find(&qs)
+	return &qs,dbResult.Error
+}
+
+
