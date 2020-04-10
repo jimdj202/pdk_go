@@ -22,6 +22,11 @@ func OnMessageCreateRoom(args []interface{}){
 		room.Insert()
 
 		a.WriteMsg(&protocol.CreateRoomResp{RoomNum:num})
+		if msg.IsQinYouQuan {
+			//TODO  通知圈子里的人
+
+		}
+
 		return
 	}
 	a.WriteMsg(&protocol.CreateRoomResp{})
