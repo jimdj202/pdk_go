@@ -4,12 +4,13 @@ package model
 import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"math/rand"
 	"pdk/src/server/lib/db"
 	"time"
 )
 
 type QinYouQuan struct {
-	ID        uint32 `gorm:"primary_key;index;type:BIGINT AUTO_INCREMENT"`
+	//ID        uint32 `gorm:"primary_key;index;type:BIGINT AUTO_INCREMENT"`
 	Qid 	  uint32 `gorm:"primary_key;index;type:MEDIUMINT"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
@@ -20,6 +21,16 @@ type QinYouQuan struct {
 }
 
 func (q *QinYouQuan)Create()(int64,error)  {
+	n := rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(999999-100000) + 100000
+	q.Qid = uint32(n)
+	for  {
+		count,_:= q.FindOneByQid()
+		if count  == 0 {
+			break
+		}
+		q.Qid = uint32(rand.New(rand.NewSource(time.Now().UnixNano())).Int31n(999999-100000) + 100000)
+	}
+
 	dbResult := db.GetGormDB().Create(q)
 	return dbResult.RowsAffected,dbResult.Error
 }
