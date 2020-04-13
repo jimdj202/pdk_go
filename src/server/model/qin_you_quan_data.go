@@ -79,6 +79,6 @@ func (q *QinYouQuan) GetCountsByUid()(int64,error)  {
 	if q.Uid < 1 {
 		return 0,errors.New("请输入Uid")
 	}
-	dbResult := db.GetGormDB().Find(q)
+	dbResult := db.GetGormDB().Where(q).Find(q)
 	return  dbResult.RowsAffected,dbResult.Error
 }

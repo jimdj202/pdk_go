@@ -42,9 +42,20 @@
     <output id="roomList"></output>
 </p>
 
+<p>
+    <button onclick="createQinYouQuan()">createQinYouQuan</button>
+    <output id="createQinYouQuan"></output>
+</p>
+
+<p>
+    <button onclick="deleteQinYouQuan()">deleteQinYouQuan</button>
+    <output id="deleteQinYouQuan"></output>
+</p>
+
+
 
 <script type="text/javascript">
-    var ws = new WebSocket('ws://127.0.0.1:8989')
+    var ws = new WebSocket('ws://127.0.0.1:3653')
     ws.onopen = function () {
         document.getElementById("result").innerHTML = "ok";
 
@@ -179,6 +190,32 @@
             }
         }
     }
+    function createQinYouQuan() {
+        var msg = {
+            CreateQinYouQuan: {
+                Uid: 12345,
+                Name: "QinYouQuan跑得快"
+            }
+        }
+        var m = JSON.stringify(msg)
+        console.log("send data:  ", m);
+        ws.send(m)
+
+        ws.onmessage = function (evt) {
+            var re = evt.data;
+            var reader = new FileReader()
+            reader.readAsText(re)
+            reader.onload = function () {
+                console.log(this.result);
+                document.getElementById("createQinYouQuan").innerHTML = this.result;
+            }
+        }
+    }
+
+    function deleteQinYouQuan() {
+
+    }
+
 </script>
 </body>
 </html>

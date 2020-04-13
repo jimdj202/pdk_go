@@ -53,7 +53,7 @@ type CreateQinYouQuan struct {
 
 type CreateQinYouQuanResp struct {
 	Qid uint32
-
+	Name string
 }
 
 type DeleteQinYouQuan struct {
@@ -93,5 +93,12 @@ func init() {
 
 	Processor.Register(&CodeState{})
 	Processor.Register(&Version{})
+
+	Processor.Register(&CreateRoom{})
+	Processor.Register(&CreateQinYouQuan{})
+	Processor.Register(&CreateQinYouQuanResp{})
+	Processor.Register(&DeleteQinYouQuan{})
+	Processor.Register(&JoinQinYouQuan{})
+	Processor.Register(&LeaveQinYouQuan{})
 
 }

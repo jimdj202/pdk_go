@@ -67,6 +67,7 @@ func handlLoginUser(args []interface{}) {
 		Nickname: user.Nickname,
 		Account:  user.Account,
 		UnionId:  user.UnionId,
+		Uid: user.Uid,
 	}
 
 	a.WriteMsg(resp)
@@ -112,9 +113,9 @@ func handlerCreateQinYouQuan(args []interface{}){
 		return
 	}
 
-	modelQ := &model.QinYouQuan{Uid: m.Uid}
+	modelQ := &model.QinYouQuan{Uid: m.Uid,Name: m.Name}
 	count,err := modelQ.GetCountsByUid()
-	if err != nil || count>4 {
+	if (count !=0 && err != nil) || count>4 {
 		a.WriteMsg(protocol.MSG_Max_Created_Error)
 		return
 	}
@@ -125,8 +126,9 @@ func handlerCreateQinYouQuan(args []interface{}){
 		return
 	}
 
-	msg := &protocol.CreateQinYouQuanResp{}
+	msg := &protocol.CreateQinYouQuanResp{Qid:modelQ.Qid,Name:modelQ.Name}
 	msg.Qid = modelQ.Qid
+
 	a.WriteMsg(msg)
 
 }
