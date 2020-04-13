@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/name5566/leaf/gate"
 	"math/rand"
+	"pdk/src/server/common"
 	"pdk/src/server/model"
 	"pdk/src/server/protocol"
 	"strconv"
@@ -38,7 +39,7 @@ func OnMessage(args []interface{}) {
 	// 消息的发送者
 	a := args[1].(gate.Agent)
 
-	o := a.UserData().(IOccupant)
+	o := a.UserData().(common.IOccupant)
 	if o.GetRoom() != nil {
 		o.GetRoom().Send(o, m)
 	} else {
@@ -57,16 +58,16 @@ var rooms *roomlist
 
 func init() {
 	rooms = &roomlist{
-		M: make(map[string]IRoom, 1000),
+		M: make(map[string]common.IRoom, 1000),
 	}
 }
 
 type roomlist struct {
-	M map[string]IRoom
+	M map[string]common.IRoom
 	sync.RWMutex
 }
 
-func CreateRoom(m interface{}) IRoom {
+func CreateRoom(m interface{}) common.IRoom {
 	if msg, ok := m.(*protocol.JoinRoom); ok {
 		if len(msg.RoomNumber) == 0 {
 			r := FindRoom()
@@ -83,7 +84,7 @@ func CreateRoom(m interface{}) IRoom {
 	return nil
 }
 
-func FindRoom() IRoom {
+func FindRoom() common.IRoom {
 	rooms.Lock()
 	for _, v := range rooms.M {
 		if v.Len() < v.Cap() {
@@ -94,14 +95,14 @@ func FindRoom() IRoom {
 	return nil
 }
 
-func GetRoom(rid string) IRoom {
+func GetRoom(rid string) common.IRoom {
 	rooms.RLock()
 	r := rooms.M[rid]
 	rooms.RUnlock()
 	return r
 }
 
-func SetRoom(room IRoom) string {
+func SetRoom(room common.IRoom) string {
 
 	rooms.Lock()
 	id := rooms.createNumber()
@@ -110,7 +111,7 @@ func SetRoom(room IRoom) string {
 	rooms.Unlock()
 	return id
 }
-func DelRoom(room IRoom) {
+func DelRoom(room common.IRoom) {
 	rooms.Lock()
 	delete(rooms.M, room.GetNumber())
 	rooms.Unlock()
@@ -128,7 +129,7 @@ func (this *roomlist) createNumber() string {
 	return n
 }
 
-func Each(f func(o IRoom) bool) {
+func Each(f func(o common.IRoom) bool) {
 	rooms.RLock()
 	for _, v := range rooms.M {
 		if !f(v) {
@@ -137,8 +138,8 @@ func Each(f func(o IRoom) bool) {
 	}
 	rooms.RUnlock()
 }
-func GetRooms() []IRoom {
-	r := make([]IRoom, len(rooms.M))
+func GetRooms() []common.IRoom {
+	r := make([]common.IRoom, len(rooms.M))
 	rooms.RLock()
 	var n = 0
 	for _, v := range rooms.M {

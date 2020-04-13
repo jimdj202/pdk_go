@@ -51,7 +51,37 @@ type CreateQinYouQuan struct {
 
 }
 
+type CreateQinYouQuanResp struct {
+	Qid uint32
+
+}
+
 type DeleteQinYouQuan struct {
+	Qid uint32
+	Uid uint32
+}
+
+type DeleteQinYouQuanResp struct {
+	Qid uint32
+	Uid uint32
+}
+
+type JoinQinYouQuan struct {
+	Qid uint32
+	Uid uint32
+}
+
+type JoinQinYouQuanResp struct {
+	Qid uint32
+	Uid uint32
+}
+
+type LeaveQinYouQuan struct {
+	Qid uint32
+	Uid uint32
+}
+
+type LeaveQinYouQuanResp struct {
 	Qid uint32
 	Uid uint32
 }

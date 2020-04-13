@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/golang/glog"
 	"github.com/name5566/leaf/gate"
+	"pdk/src/server/common"
 	"pdk/src/server/game"
 	//"pdk/src/server/game/internal"
 	"pdk/src/server/model"
@@ -18,6 +19,9 @@ func init() {
 
 	handler(&protocol.CreateQinYouQuan{},handlerCreateQinYouQuan)
 	handler(&protocol.DeleteQinYouQuan{},handlerDeleteQinYouQuan)
+	handler(&protocol.JoinQinYouQuan{},handlerJoinQinYouQuan)
+	handler(&protocol.LeaveQinYouQuan{},handlerLeaveQinYouQuan)
+
 }
 
 func handler(m interface{}, h interface{}) {
@@ -91,7 +95,7 @@ func onRoomList(args []interface{}) {
 			Cap:         v.Len(),
 			DraginChips: data.DraginChips,
 			CreatedAt:   data.CreatedTime(),
-			Rid:         data.Rid,
+			Rid:         data.ID,
 		}
 	}
 	msg.Room = rooms
@@ -99,9 +103,94 @@ func onRoomList(args []interface{}) {
 }
 
 func handlerCreateQinYouQuan(args []interface{}){
+	// 收到的消息
+	m := args[0].(*protocol.CreateQinYouQuan)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+	if m.Uid <0 || len(m.Name) <0 {
+		a.WriteMsg(protocol.MSG_Param_Error)
+		return
+	}
+
+	modelQ := &model.QinYouQuan{Uid: m.Uid}
+	count,err := modelQ.GetCountsByUid()
+	if err != nil || count>4 {
+		a.WriteMsg(protocol.MSG_Max_Created_Error)
+		return
+	}
+
+	count,err = modelQ.Create()
+	if err!=nil{
+		a.WriteMsg(protocol.MSG_DB_Error)
+		return
+	}
+
+	msg := &protocol.CreateQinYouQuanResp{}
+	msg.Qid = modelQ.Qid
+	a.WriteMsg(msg)
 
 }
 
 func handlerDeleteQinYouQuan(args []interface{}){
+	// 收到的消息
+	m := args[0].(*protocol.DeleteQinYouQuan)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+	o := a.UserData().(*common.Occupant)
+	if m.Uid <0 || m.Qid <0 || o.Uid != m.Uid {
+		a.WriteMsg(protocol.MSG_Param_Error)
+		return
+	}
+	modelQ := &model.QinYouQuan{Uid: m.Uid,Qid: m.Qid}
+	err := modelQ.Delete()
+	if err!=nil {
+		a.WriteMsg(protocol.MSG_DB_Error)
+		return
+	}
+	msg := &protocol.DeleteQinYouQuanResp{Uid: m.Uid,Qid:m.Qid}
+	a.WriteMsg(msg)
+}
+
+func handlerJoinQinYouQuan(args []interface{}){
+	// 收到的消息
+	m := args[0].(*protocol.JoinQinYouQuan)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+
+	if m.Uid <0 || m.Qid <0  {
+		a.WriteMsg(protocol.MSG_Param_Error)
+		return
+	}
+
+	modelQ := &model.QinYouQuanMember{Qid:m.Qid,Uid:m.Uid}
+	_ ,err := modelQ.FindOrCreate()
+	if err != nil {
+		a.WriteMsg(protocol.MSG_DB_Error)
+	}
+	msg := &protocol.JoinQinYouQuanResp{Qid: m.Qid,Uid: m.Uid}
+	a.WriteMsg(msg)
 
 }
+
+func handlerLeaveQinYouQuan(args []interface{}){
+	// 收到的消息
+	m := args[0].(*protocol.LeaveQinYouQuan)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+
+	if m.Uid <0 || m.Qid <0  {
+		a.WriteMsg(protocol.MSG_Param_Error)
+		return
+	}
+
+	modelQ := &model.QinYouQuanMember{Qid:m.Qid,Uid:m.Uid}
+	_ ,err := modelQ.DeleteByQidAndUid()
+	if err != nil {
+		a.WriteMsg(protocol.MSG_DB_Error)
+	}
+
+	msg := &protocol.LeaveQinYouQuanResp{Uid: m.Uid,Qid: m.Qid}
+	a.WriteMsg(msg)
+
+}
+

@@ -1,15 +1,16 @@
 package internal
 
 import (
-	"pdk/src/server/protocol"
-	"github.com/golang/glog"
 	"github.com/davecgh/go-spew/spew"
-	"time"
+	"github.com/golang/glog"
+	"pdk/src/server/common"
 	"pdk/src/server/lib/utils"
+	"pdk/src/server/protocol"
+	"time"
 )
 
-func (r *Room) joinRoom(m *protocol.JoinRoom, o *Occupant) {
-	if o.room != nil {
+func (r *Room) joinRoom(m *protocol.JoinRoom, o *common.Occupant) {
+	if o.Room != nil {
 		for k, v := range r.Occupants {
 			glog.Infoln(v, o)
 			if v.Uid == o.Uid {
@@ -34,14 +35,14 @@ func (r *Room) joinRoom(m *protocol.JoinRoom, o *Occupant) {
 		Number: r.Number,
 	}
 	userinfos := make([]*protocol.UserInfo, 0, r.Cap())
-	r.Each(0, func(o *Occupant) bool {
+	r.Each(0, func(o *common.Occupant) bool {
 		userinfo := &protocol.UserInfo{
 			Nickname: o.Nickname,
 			Uid:      o.Uid,
 			Account:  o.Account,
 			Sex:      o.Sex,
 			Profile:  o.Profile,
-			Chips:    o.chips,
+			Chips:    o.Chips,
 		}
 		userinfos = append(userinfos, userinfo)
 		return true
@@ -59,7 +60,7 @@ func (r *Room) joinRoom(m *protocol.JoinRoom, o *Occupant) {
 			Account:  o.Account,
 			Sex:      o.Sex,
 			Profile:  o.Profile,
-			Chips:    o.chips,
+			Chips:    o.Chips,
 		}
 		r.Broadcast(&protocol.JoinRoomBroadcast{UserInfo: userInfo}, true, o.Uid)
 	}
@@ -77,23 +78,23 @@ func (r *Room) joinRoom(m *protocol.JoinRoom, o *Occupant) {
 	r.Debug("joinRoom", spew.Sdump(m))
 }
 
-func (r *Room) leaveAndRecycleChips(o *Occupant) {
+func (r *Room) leaveAndRecycleChips(o *common.Occupant) {
 	if r.removeOccupant(o) > 0 {
 		// 玩家站起回收带入筹码
-		gap := int32(o.chips) - int32(r.DraginChips)
+		gap := int32(o.Chips) - int32(r.DraginChips)
 		if gap == 0 {
 			o.UpdateChips(gap)
 		}
 	}
 }
-func (r *Room) leaveRoom(m *protocol.LeaveRoom, o *Occupant) {
+func (r *Room) leaveRoom(m *protocol.LeaveRoom, o *common.Occupant) {
 
 	r.removeObserve(o)
 	r.removeOccupant(o)
 	r.leaveAndRecycleChips(o)
 
 	o.RoomID = ""
-	o.room = nil
+	o.Room = nil
 	o.UpdateRoomId()
 
 	leave := &protocol.LeaveRoom{
@@ -111,7 +112,7 @@ func (r *Room) leaveRoom(m *protocol.LeaveRoom, o *Occupant) {
 	glog.Errorln("leaveRoom", m)
 }
 
-func (r *Room) bet(m *protocol.Bet, o *Occupant) {
+func (r *Room) bet(m *protocol.Bet, o *common.Occupant) {
 	if !o.IsGameing() {
 		o.WriteMsg(protocol.MSG_NOT_NOT_START)
 		return
@@ -133,11 +134,11 @@ func (r *Room) bet(m *protocol.Bet, o *Occupant) {
 	glog.Errorln("bet", m)
 }
 
-func (r *Room) sitDown(m *protocol.SitDown, o *Occupant) {
+func (r *Room) sitDown(m *protocol.SitDown, o *common.Occupant) {
 	pos := r.addOccupant(o)
 	if pos == 0 {
 		// 给进入房间的玩家带入筹码
-		o.chips = r.DraginChips
+		o.Chips = r.DraginChips
 		r.addObserve(o)
 	} else {
 
@@ -147,7 +148,7 @@ func (r *Room) sitDown(m *protocol.SitDown, o *Occupant) {
 	glog.Errorln("sitDown", m)
 }
 
-func (r *Room) standUp(m *protocol.StandUp, o *Occupant) {
+func (r *Room) standUp(m *protocol.StandUp, o *common.Occupant) {
 
 	o.SetAction(-1)
 	r.leaveAndRecycleChips(o)
@@ -158,6 +159,6 @@ func (r *Room) standUp(m *protocol.StandUp, o *Occupant) {
 	glog.Errorln("standUp", m)
 }
 
-func (r *Room) chat(m *protocol.Chat, o *Occupant) {
+func (r *Room) chat(m *protocol.Chat, o *common.Occupant) {
 	r.Broadcast(m, true)
 }

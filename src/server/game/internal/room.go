@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/golang/glog"
 	"pdk/src/server/algorithm"
+	"pdk/src/server/common"
 	"pdk/src/server/model"
 	"pdk/src/server/protocol"
 	"time"
@@ -17,9 +18,9 @@ type Room struct {
 	*model.Room
 	*MsgLoop
 	*Log
-	Occupants   []*Occupant
-	observes    []*Occupant // 站起的玩家
-	AutoSitdown []*Occupant // 自动坐下队列
+	Occupants   []*common.Occupant
+	observes    []*common.Occupant // 站起的玩家
+	AutoSitdown []*common.Occupant // 自动坐下队列
 
 	remain int
 	allin  int
@@ -48,7 +49,7 @@ func NewRoom(max uint8, sb, bb uint32, chips uint32, timeout uint8) *Room {
 		Room:      &model.Room{DraginChips: chips,},
 		MsgLoop:   NewMsgLoop(),
 		Chips:     make([]uint32, max),
-		Occupants: make([]*Occupant, max),
+		Occupants: make([]*common.Occupant, max),
 		Pot:       make([]uint32, 0, max),
 		Timeout:   time.Second * time.Duration(timeout),
 		SB:        sb,
@@ -73,7 +74,7 @@ type startDelay struct {
 	kind uint8
 }
 
-func (r *Room) New(m interface{}) IRoom {
+func (r *Room) New(m interface{}) common.IRoom {
 	glog.Errorln(r, m)
 	if msg, ok := m.(*protocol.JoinRoom); ok {
 		if len(msg.RoomNumber) == 0 {
@@ -130,7 +131,7 @@ func (r *Room) Broadcast(msg interface{}, all bool, exc ...uint32) {
 	}
 }
 
-func (r *Room) addOccupant(o *Occupant) uint8 {
+func (r *Room) addOccupant(o *common.Occupant) uint8 {
 	for _, v := range r.Occupants {
 		if v != nil && v.GetUid() == o.Uid {
 			return 0
@@ -149,7 +150,7 @@ func (r *Room) addOccupant(o *Occupant) uint8 {
 	return 0
 }
 
-func (r *Room) removeOccupant(o *Occupant) uint8 {
+func (r *Room) removeOccupant(o *common.Occupant) uint8 {
 	for k, v := range r.Occupants {
 		if v != nil && v.GetUid() == o.Uid {
 			v.SetPos(0)
@@ -160,7 +161,7 @@ func (r *Room) removeOccupant(o *Occupant) uint8 {
 	return 0
 }
 
-func (r *Room) addObserve(o *Occupant) uint8 {
+func (r *Room) addObserve(o *common.Occupant) uint8 {
 	for _, v := range r.observes {
 		if v != nil && v.Uid == o.Uid {
 			return 0
@@ -172,7 +173,7 @@ func (r *Room) addObserve(o *Occupant) uint8 {
 	return 0
 }
 
-func (r *Room) removeObserve(o *Occupant) {
+func (r *Room) removeObserve(o *common.Occupant) {
 	for k, v := range r.observes {
 		if v != nil && v.Uid == o.Uid {
 			r.observes = append(r.observes[:k], r.observes[k+1:]...)
@@ -182,7 +183,7 @@ func (r *Room) removeObserve(o *Occupant) {
 }
 
 // start starts from 0
-func (r *Room) Each(start uint8, f func(o *Occupant) bool) {
+func (r *Room) Each(start uint8, f func(o *common.Occupant) bool) {
 	volume := r.Cap()
 	end := (volume + start - 1) % volume
 	i := start

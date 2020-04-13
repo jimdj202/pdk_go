@@ -2,14 +2,15 @@ package internal
 
 import (
 	"github.com/golang/glog"
-	"pdk/src/server/protocol"
-	"pdk/src/server/model"
 	"pdk/src/server/algorithm"
-	"time"
+	"pdk/src/server/common"
 	"pdk/src/server/lib/utils"
+	"pdk/src/server/model"
+	"pdk/src/server/protocol"
+	"time"
 )
 
-func (r *Room) startDelay(startDelay *startDelay, o *Occupant) {
+func (r *Room) startDelay(startDelay *startDelay, o *common.Occupant) {
 	if startDelay.kind == 0 {
 		r.Info()
 		r.start()
@@ -20,9 +21,9 @@ func (r *Room) start() {
 		return
 	}
 	// 产生庄
-	var dealer *Occupant
+	var dealer *common.Occupant
 	button := r.Button - 1
-	r.Each((button+1)%r.Cap(), func(o *Occupant) bool {
+	r.Each((button+1)%r.Cap(), func(o *common.Occupant) bool {
 		r.Button = o.Pos
 		dealer = o
 		return false
@@ -37,8 +38,8 @@ func (r *Room) start() {
 	// 剔除筹码小于大盲和离线的玩家
 
 	n := 0
-	r.Each(0, func(o *Occupant) bool {
-		if o.chips < r.BB || o.IsOffline() {
+	r.Each(0, func(o *common.Occupant) bool {
+		if o.Chips < r.BB || o.IsOffline() {
 			o.SetSitdown()
 			return true
 		}
@@ -75,12 +76,12 @@ func (r *Room) start() {
 
 	// Round 1 : preflop
 	r.ready()
-	r.Each(0, func(o *Occupant) bool {
-		o.cards = algorithm.Cards{r.Cards.Take(), r.Cards.Take()}
+	r.Each(0, func(o *common.Occupant) bool {
+		o.Cards = algorithm.Cards{r.Cards.Take(), r.Cards.Take()}
 
-		kind, _ := algorithm.De(o.cards.GetType())
+		kind, _ := algorithm.De(o.Cards.GetType())
 		m := &protocol.PreFlop{
-			Cards: o.cards.Bytes(),
+			Cards: o.Cards.Bytes(),
 			Kind:  kind,
 		}
 		o.WriteMsg(m)
@@ -98,8 +99,8 @@ func (r *Room) start() {
 	// Round 2 : Flop
 	r.ready()
 	r.Cards = algorithm.Cards{r.Cards.Take(), r.Cards.Take(), r.Cards.Take()}
-	r.Each(0, func(o *Occupant) bool {
-		cs := r.Cards.Append(o.cards...)
+	r.Each(0, func(o *common.Occupant) bool {
+		cs := r.Cards.Append(o.Cards...)
 
 		kind, _ := algorithm.De(cs.GetType())
 		m := &protocol.Flop{
@@ -121,8 +122,8 @@ func (r *Room) start() {
 	// Round 3 : Turn
 	r.ready()
 	r.Cards = r.Cards.Append(r.Cards.Take())
-	r.Each(0, func(o *Occupant) bool {
-		cs := r.Cards.Append(o.cards...)
+	r.Each(0, func(o *common.Occupant) bool {
+		cs := r.Cards.Append(o.Cards...)
 		kind, _ := algorithm.De(cs.GetType())
 		m := &protocol.Turn{
 			Card: r.Cards[3],
@@ -143,8 +144,8 @@ func (r *Room) start() {
 	// Round 4 : River
 	r.ready()
 	r.Cards = r.Cards.Append(r.Cards.Take())
-	r.Each(0, func(o *Occupant) bool {
-		cs := r.Cards.Append(o.cards...)
+	r.Each(0, func(o *common.Occupant) bool {
+		cs := r.Cards.Append(o.Cards...)
 		value := cs.GetType()
 		kind, _ := algorithm.De(value)
 		m := &protocol.River{
@@ -169,7 +170,7 @@ showdown:
 			item := &protocol.ShowdownItem{
 				Uid:      o.Uid,
 				ChipsWin: r.Chips[o.Pos-1],
-				Chips:    o.chips,
+				Chips:    o.Chips,
 			}
 			showdown.Showdown = append(showdown.Showdown, item)
 		}
@@ -208,11 +209,11 @@ func (r *Room) action(pos uint8) {
 
 	for {
 		var raised uint8
-		r.Each(pos-1, func(o *Occupant) bool {
+		r.Each(pos-1, func(o *common.Occupant) bool {
 			if r.remain <= 1 {
 				return false
 			}
-			if o.Pos == skip || o.chips == 0 {
+			if o.Pos == skip || o.Chips == 0 {
 				return true
 			}
 			r.WriteMsg(&protocol.BetPrompt{})
@@ -236,9 +237,9 @@ func (r *Room) action(pos uint8) {
 
 func (r *Room) ready() {
 	r.Bet = 0
-	r.Each(0, func(o *Occupant) bool {
+	r.Each(0, func(o *common.Occupant) bool {
 		o.Bet = 0
-		o.waitAction = false
+		o.WaitAction = false
 		r.remain++
 		o.HandValue = 0
 		return true
@@ -254,10 +255,10 @@ func (r *Room) showdown() {
 	}
 
 	for _, pot := range pots {
-		var maxO *Occupant
+		var maxO *common.Occupant
 		for _, pos := range pot.OPos {
 			o := r.Occupants[pos-1]
-			if o != nil && len(o.cards) > 0 {
+			if o != nil && len(o.Cards) > 0 {
 				if maxO == nil {
 					maxO = o
 					continue
@@ -290,16 +291,16 @@ func (r *Room) showdown() {
 
 	for i, _ := range r.Chips {
 		if r.Occupants[i] != nil {
-			r.Occupants[i].chips += r.Chips[i]
+			r.Occupants[i].Chips += r.Chips[i]
 		}
 	}
 }
 
-func (r *Room) betting(o *Occupant, n int32) (raised bool) {
-	if n > int32(o.chips) || // 手上筹码不足
+func (r *Room) betting(o *common.Occupant, n int32) (raised bool) {
+	if n > int32(o.Chips) || // 手上筹码不足
 		(n == 0 && o.Bet != r.Bet) || // 让牌
-		(n > 0 && n != int32(o.chips) && ((n + int32(o.Bet)) < int32(r.Bet))) {
-		glog.Errorf("下注筹码不合法!!！ n:%d  p.Bet:%d  p.Chips:%d  t.Bet:%d", n, o.Bet, o.chips, r.Bet)
+		(n > 0 && n != int32(o.Chips) && ((n + int32(o.Bet)) < int32(r.Bet))) {
+		glog.Errorf("下注筹码不合法!!！ n:%d  p.Bet:%d  p.Chips:%d  t.Bet:%d", n, o.Bet, o.Chips, r.Bet)
 		return
 	}
 
@@ -314,16 +315,16 @@ func (r *Room) betting(o *Occupant, n int32) (raised bool) {
 		actionName = model.BET_CHECK
 	} else if uint32(n)+o.Bet <= r.Bet {
 		actionName = model.BET_CALL
-		o.chips -= uint32(n)
+		o.Chips -= uint32(n)
 		o.Bet += uint32(n)
 	} else {
 		actionName = model.BET_RAISE
-		o.chips -= uint32(n)
+		o.Chips -= uint32(n)
 		o.Bet += uint32(n)
 		r.Bet = o.Bet
 		raised = true
 	}
-	if o.chips == 0 {
+	if o.Chips == 0 {
 		r.allin++
 		actionName = model.BET_ALLIN
 	}
@@ -338,7 +339,7 @@ func (r *Room) betting(o *Occupant, n int32) (raised bool) {
 	return
 }
 
-func (r *Room) next(pos uint8) *Occupant {
+func (r *Room) next(pos uint8) *common.Occupant {
 	volume := r.Cap()
 	for i := (pos) % volume; i != pos-1; i = (i + 1) % volume {
 		if r.Occupants[i] != nil && r.Occupants[i].IsGameing() {

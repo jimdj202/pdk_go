@@ -4,6 +4,7 @@ import (
 	"errors"
 	"github.com/davecgh/go-spew/spew"
 	"github.com/golang/glog"
+	"pdk/src/server/common"
 	"pdk/src/server/lib/route"
 	"pdk/src/server/lib/utils"
 	"pdk/src/server/protocol"
@@ -11,14 +12,14 @@ import (
 
 type MsgLoop struct {
 	closedBroadcastChan chan struct{}
-	closeChan           chan IRoom
+	closeChan           chan common.IRoom
 	msgChan             chan *msgObj
 	route.Route
 }
 
 func NewMsgLoop() *MsgLoop {
 	m := &MsgLoop{
-		closeChan:           make(chan IRoom, 1),
+		closeChan:           make(chan common.IRoom, 1),
 		closedBroadcastChan: make(chan struct{}),
 		msgChan:             make(chan *msgObj, 128),
 	}
@@ -40,7 +41,7 @@ func (r *MsgLoop) msgLoop() {
 		select {
 		case m := <-r.closeChan:
 			close(r.closedBroadcastChan)
-			DelRoom(m.(IRoom))
+			DelRoom(m.(common.IRoom))
 			return
 		case m := <-r.msgChan:
 			r.Emit(m.msg, m.o)
@@ -48,7 +49,7 @@ func (r *MsgLoop) msgLoop() {
 	}
 }
 
-func (r *MsgLoop) Close(m IRoom) {
+func (r *MsgLoop) Close(m common.IRoom) {
 	select {
 	case r.closeChan <- m:
 	default:
@@ -57,10 +58,10 @@ func (r *MsgLoop) Close(m IRoom) {
 
 type msgObj struct {
 	msg interface{}
-	o   IOccupant
+	o   common.IOccupant
 }
 
-func (r *MsgLoop) Send(o IOccupant, m interface{}) error {
+func (r *MsgLoop) Send(o common.IOccupant, m interface{}) error {
 	select {
 	case r.msgChan <- &msgObj{m, o}:
 	default:
@@ -71,10 +72,10 @@ func (r *MsgLoop) Send(o IOccupant, m interface{}) error {
 }
 
 type Log struct {
-	room IRoom
+	room common.IRoom
 }
 
-func NewLog(room IRoom) *Log {
+func NewLog(room common.IRoom) *Log {
 	return &Log{room: room}
 }
 

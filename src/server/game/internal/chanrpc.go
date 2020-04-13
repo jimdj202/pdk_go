@@ -3,6 +3,7 @@ package internal
 import (
 	"github.com/golang/glog"
 	"github.com/name5566/leaf/gate"
+	"pdk/src/server/common"
 	"pdk/src/server/model"
 )
 
@@ -25,11 +26,11 @@ func rpcCloseAgent(args []interface{}) {
 func rpcLoginAgent(args []interface{}) {
 	a := args[0].(gate.Agent)
 	u := args[1].(*model.User)
-	o := NewOccupant(u, a)
+	o := common.NewOccupant(u, a)
 	a.SetUserData(o)
 
 	if len(u.RoomID) > 0 {
-		o.room = GetRoom(u.RoomID)
+		o.Room = GetRoom(u.RoomID)
 	}
 	glog.Infof("rpcLoginAgent %T", u)
 }

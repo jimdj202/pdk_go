@@ -1,9 +1,10 @@
-package internal
+package common
 
 import (
 	"errors"
 	"github.com/name5566/leaf/gate"
 	"pdk/src/server/algorithm"
+	//"pdk/src/server/game/internal"
 	"pdk/src/server/model"
 	"time"
 )
@@ -11,17 +12,17 @@ import (
 type Occupant struct {
 	*model.User
 	gate.Agent
-	room   IRoom
-	cards  algorithm.Cards
+	Room   IRoom
+	Cards  algorithm.Cards
 	Pos    uint8 // 玩家座位号，从1开始
-	status int32 // 1为离线状态
+	Status int32 // 1为离线状态
 
 	Bet        uint32 // 当前下注
-	actions    chan int32
-	waitAction bool
+	Actions    chan int32
+	WaitAction bool
 
-	chips     uint32 // 带入的筹码
-	HandValue      uint32
+	Chips     uint32 // 带入的筹码
+	HandValue uint32
 }
 
 const (
@@ -32,32 +33,32 @@ const (
 )
 
 func (o *Occupant) GetRoom() IRoom {
-	return o.room
+	return o.Room
 }
 func (o *Occupant) SetRoom(m IRoom) {
-	o.room = m
+	o.Room = m
 }
 func (o *Occupant) SetAction(n int32)error {
-	if o.waitAction {
-		o.actions <- n
+	if o.WaitAction {
+		o.Actions <- n
 		return  nil
 	}
 	return  errors.New("not your action")
 }
 func (o *Occupant) GetAction(timeout time.Duration) int32 {
 	timer := time.NewTimer(timeout)
-	o.waitAction = true
+	o.WaitAction = true
 	select {
-	case n := <-o.actions:
+	case n := <-o.Actions:
 		timer.Stop()
-		o.waitAction = false
+		o.WaitAction = false
 		return n
-	case <-o.room.Closed():
+	case <-o.Room.Closed():
 		timer.Stop()
-		o.waitAction = false
+		o.WaitAction = false
 		return -1
 	case <-timer.C:
-		o.waitAction = false
+		o.WaitAction = false
 		timer.Stop()
 		return -1 // 超时弃牌
 	}
@@ -72,7 +73,7 @@ func (o *Occupant) GetUid() uint32 {
 	return  o.Uid
 }
 func (o *Occupant) WriteMsg(msg interface{}) {
-	if o.status != Occupant_status_Offline {
+	if o.Status != Occupant_status_Offline {
 		o.Agent.WriteMsg(msg)
 	}
 }
@@ -85,48 +86,48 @@ func (o *Occupant) GetId() uint32 {
 }
 
 func (o *Occupant) SetObserve() {
-	o.status = Occupant_status_Observe
+	o.Status = Occupant_status_Observe
 }
 
 func (o *Occupant) IsObserve() bool {
-	return o.status == Occupant_status_Observe
+	return o.Status == Occupant_status_Observe
 }
 
 func (o *Occupant) SetOffline() {
-	o.status = Occupant_status_Offline
+	o.Status = Occupant_status_Offline
 }
 
 func (o *Occupant) IsOffline() bool {
-	return o.status == Occupant_status_Offline
+	return o.Status == Occupant_status_Offline
 }
 
 func (o *Occupant) SetSitdown() {
-	o.status = Occupant_status_Sitdown
+	o.Status = Occupant_status_Sitdown
 }
 
 func (o *Occupant) IsSitdown() bool {
-	return o.status == Occupant_status_Sitdown
+	return o.Status == Occupant_status_Sitdown
 }
 
 func (o *Occupant) SetGameing() {
-	o.status = Occupant_status_InGame
+	o.Status = Occupant_status_InGame
 }
 
 func (o *Occupant) IsGameing() bool {
-	return o.status == Occupant_status_InGame
+	return o.Status == Occupant_status_InGame
 }
 
 func (o *Occupant) Replace(value *Occupant) {
 	o.Pos = value.Pos
-	o.cards = value.cards
-	o.room = value.room
+	o.Cards = value.Cards
+	o.Room = value.Room
 }
 
 func NewOccupant(data *model.User, conn gate.Agent) *Occupant {
 	o := &Occupant{
 		User:    data,
 		Agent:   conn,
-		actions: make(chan int32),
+		Actions: make(chan int32),
 	}
 	return o
 }

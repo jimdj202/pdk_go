@@ -1,6 +1,7 @@
 package game
 
 import (
+	"pdk/src/server/common"
 	"pdk/src/server/game/internal"
 
 )
@@ -9,7 +10,7 @@ var (
 	Module  = new(internal.Module)//建立模块新的
 	ChanRPC = internal.ChanRPC
 )
-func GetRoomsEx() []internal.IRoom {
+func GetRoomsEx() []common.IRoom {
 	//r := make([]internal.IRoom, len(rooms.M))
 	//rooms.RLock()
 	//var n = 0

@@ -14,6 +14,8 @@ var (
 	MSG_Login_Error      = &CodeState{Code: 2, Message: "login fail"}     //登录失败 信息错误
 	MSG_Version_Error    = &CodeState{Code: 3, Message: "version wrong"}  //版本号不对
 	MSG_User_Not_Exist   = &CodeState{Code: 4, Message: "user not exist"} //用户不存在
+	MSG_Param_Error   = &CodeState{Code: 5, Message: "param error"} //参数错误
+	MSG_Max_Created_Error   = &CodeState{Code: 6, Message: "max created error"} //参数错误
 	MSG_DB_Error         = &CodeState{Code: 111, Message: "db error"}     //数据库出错
 
 	//房间错误信息 1000开始标记

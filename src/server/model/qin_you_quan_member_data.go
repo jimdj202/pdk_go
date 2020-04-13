@@ -22,6 +22,12 @@ func (q *QinYouQuanMember) Create () (int64,error){
 	return dbResult.RowsAffected,dbResult.Error
 }
 
+func (q *QinYouQuanMember) FindOrCreate () (int64,error){
+	dbResult := db.GetGormDB().Where(q).FirstOrInit(q)
+	return dbResult.RowsAffected,dbResult.Error
+}
+
+
 func (q *QinYouQuanMember) Delete() (int64,error) {
 	dbResult := db.GetGormDB().Delete(q)
 	return dbResult.RowsAffected,dbResult.Error
