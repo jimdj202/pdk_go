@@ -139,7 +139,7 @@ func handlerDeleteQinYouQuan(args []interface{}){
 	// 消息的发送者
 	a := args[1].(gate.Agent)
 	o := a.UserData().(*common.Occupant)
-	if m.Uid <0 || m.Qid <0 || o.Uid != m.Uid {
+	if m.Uid <1 || m.Qid <1 || o.Uid != m.Uid {
 		a.WriteMsg(protocol.MSG_Param_Error)
 		return
 	}
@@ -159,15 +159,23 @@ func handlerJoinQinYouQuan(args []interface{}){
 	// 消息的发送者
 	a := args[1].(gate.Agent)
 
-	if m.Uid <0 || m.Qid <0  {
+	if m.Uid <1 || m.Qid <1  {
+		a.WriteMsg(protocol.MSG_Param_Error)
+		return
+	}
+	//查找亲友圈
+	modelQ := &model.QinYouQuan{Qid: m.Qid}
+	_,err := modelQ.FindOneByQid()
+	if err != nil {
 		a.WriteMsg(protocol.MSG_Param_Error)
 		return
 	}
 
-	modelQ := &model.QinYouQuanMember{Qid:m.Qid,Uid:m.Uid}
-	_ ,err := modelQ.FindOrCreate()
+	modelQm := &model.QinYouQuanMember{Qid:m.Qid,Uid:m.Uid}
+	_ ,err = modelQm.FindOrCreate()
 	if err != nil {
 		a.WriteMsg(protocol.MSG_DB_Error)
+		return
 	}
 	msg := &protocol.JoinQinYouQuanResp{Qid: m.Qid,Uid: m.Uid}
 	a.WriteMsg(msg)
@@ -180,7 +188,7 @@ func handlerLeaveQinYouQuan(args []interface{}){
 	// 消息的发送者
 	a := args[1].(gate.Agent)
 
-	if m.Uid <0 || m.Qid <0  {
+	if m.Uid < 1 || m.Qid < 1  {
 		a.WriteMsg(protocol.MSG_Param_Error)
 		return
 	}

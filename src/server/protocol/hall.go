@@ -98,7 +98,10 @@ func init() {
 	Processor.Register(&CreateQinYouQuan{})
 	Processor.Register(&CreateQinYouQuanResp{})
 	Processor.Register(&DeleteQinYouQuan{})
+	Processor.Register(&DeleteQinYouQuanResp{})
 	Processor.Register(&JoinQinYouQuan{})
+	Processor.Register(&JoinQinYouQuanResp{})
 	Processor.Register(&LeaveQinYouQuan{})
+	Processor.Register(&LeaveQinYouQuanResp{})
 
 }

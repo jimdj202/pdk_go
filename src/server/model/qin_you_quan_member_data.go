@@ -10,8 +10,8 @@ type QinYouQuanMember struct {
 	CreatedAt time.Time
 	Qid		uint32 `gorm:"primary_key;index;type:MEDIUMINT"`
 	Uid		uint32 `gorm:"primary_key;index;type:BIGINT"`
-	Qname   string `gorm:"type:VARCHAR(16)"`
-	Uname	string `gorm:"type:VARCHAR(16)"`
+	//Qname   string `gorm:"type:VARCHAR(16)"`
+	//Uname	string `gorm:"type:VARCHAR(16)"`
 	Status  uint8 `gorm:"type:SMALLINT"`
 	IsManager uint8 `gorm:"type:SMALLINT"`
 
@@ -23,7 +23,7 @@ func (q *QinYouQuanMember) Create () (int64,error){
 }
 
 func (q *QinYouQuanMember) FindOrCreate () (int64,error){
-	dbResult := db.GetGormDB().Where(q).FirstOrInit(q)
+	dbResult := db.GetGormDB().Where(q).FirstOrCreate(q)
 	return dbResult.RowsAffected,dbResult.Error
 }
 
@@ -34,7 +34,7 @@ func (q *QinYouQuanMember) Delete() (int64,error) {
 }
 
 func (q *QinYouQuanMember) DeleteByQidAndUid() (int64,error) {
-	dbResult := db.GetGormDB().Where("qid = ? AND uid = ? ",q.Qid,q.Uid).Delete(QinYouQuanMember{})
+	dbResult := db.GetGormDB().Where("qid = ? AND uid = ? ",q.Qid,q.Uid).Delete(q)
 	return dbResult.RowsAffected,dbResult.Error
 }
 

@@ -52,7 +52,15 @@
     <output id="deleteQinYouQuan"></output>
 </p>
 
+<p>
+    <button onclick="joinQinYouQuan()">joinQinYouQuan</button>
+    <output id="joinQinYouQuan"></output>
+</p>
 
+<p>
+    <button onclick="leaveQinYouQuan()">leaveQinYouQuan</button>
+    <output id="leaveQinYouQuan"></output>
+</p>
 
 <script type="text/javascript">
     var ws = new WebSocket('ws://127.0.0.1:3653')
@@ -193,7 +201,7 @@
     function createQinYouQuan() {
         var msg = {
             CreateQinYouQuan: {
-                Uid: 12345,
+                Uid: 455749,
                 Name: "QinYouQuan跑得快"
             }
         }
@@ -213,7 +221,69 @@
     }
 
     function deleteQinYouQuan() {
+        var msg = {
+            DeleteQinYouQuan: {
+                Uid: 455749,
+                Qid: 601835,
+            }
+        }
+        var m = JSON.stringify(msg)
+        console.log("send data:  ", m);
+        ws.send(m)
 
+        ws.onmessage = function (evt) {
+            var re = evt.data;
+            var reader = new FileReader()
+            reader.readAsText(re)
+            reader.onload = function () {
+                console.log(this.result);
+                document.getElementById("deleteQinYouQuan").innerHTML = this.result;
+            }
+        }
+    }
+
+    function joinQinYouQuan() {
+        var msg = {
+            JoinQinYouQuan: {
+                Uid: 455749,
+                Qid: 918634,
+            }
+        }
+        var m = JSON.stringify(msg)
+        console.log("send data:  ", m);
+        ws.send(m)
+
+        ws.onmessage = function (evt) {
+            var re = evt.data;
+            var reader = new FileReader()
+            reader.readAsText(re)
+            reader.onload = function () {
+                console.log(this.result);
+                document.getElementById("joinQinYouQuan").innerHTML = this.result;
+            }
+        }
+    }
+
+    function leaveQinYouQuan() {
+        var msg = {
+            LeaveQinYouQuan: {
+                Uid: 455749,
+                Qid: 918634,
+            }
+        }
+        var m = JSON.stringify(msg)
+        console.log("send data:  ", m);
+        ws.send(m)
+
+        ws.onmessage = function (evt) {
+            var re = evt.data;
+            var reader = new FileReader()
+            reader.readAsText(re)
+            reader.onload = function () {
+                console.log(this.result);
+                document.getElementById("leaveQinYouQuan").innerHTML = this.result;
+            }
+        }
     }
 
 </script>
