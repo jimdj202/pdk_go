@@ -45,6 +45,17 @@ type CreateRoomResp struct {
 	RoomNum string
 }
 
+type CreateQinYouQuan struct {
+	Name string
+	Uid uint32
+
+}
+
+type DeleteQinYouQuan struct {
+	Qid uint32
+	Uid uint32
+}
+
 func init() {
 	Processor.Register(&Hello{})
 	Processor.Register(&UserLoginInfo{})

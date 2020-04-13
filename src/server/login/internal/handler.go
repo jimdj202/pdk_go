@@ -15,6 +15,9 @@ func init() {
 	handler(&protocol.UserLoginInfo{}, handlLoginUser)
 	handler(&protocol.Version{}, handlVersion)
 	handler(&protocol.RoomList{}, onRoomList) //
+
+	handler(&protocol.CreateQinYouQuan{},handlerCreateQinYouQuan)
+	handler(&protocol.DeleteQinYouQuan{},handlerDeleteQinYouQuan)
 }
 
 func handler(m interface{}, h interface{}) {
@@ -93,4 +96,12 @@ func onRoomList(args []interface{}) {
 	}
 	msg.Room = rooms
 	a.WriteMsg(msg)
+}
+
+func handlerCreateQinYouQuan(args []interface{}){
+
+}
+
+func handlerDeleteQinYouQuan(args []interface{}){
+
 }
