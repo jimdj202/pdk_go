@@ -31,6 +31,24 @@ type RoomInfo struct {
 	MinChips uint32
 }
 
+type CreateRoom struct {
+	ToomType uint32 `房间类型:跑得快,四川麻将等等`
+	IsQinYouQuan bool
+	QinYouQuanNum string
+	CreatePdkRoomConf
+
+}
+
+type CreatePdkRoomConf struct {
+	TotalPersion uint32
+
+}
+
+type CreateRoomResp struct {
+	TotalPersion uint32
+	RoomNum string
+}
+
 type StandUp struct {
 	Uid uint32
 }
@@ -43,11 +61,6 @@ type SitDown struct {
 type LeaveRoom struct {
 	RoomNumber string
 	Uid        uint32
-}
-
-type CreatePdkRoomConf struct {
-	TotalPersion uint32
-
 }
 
 

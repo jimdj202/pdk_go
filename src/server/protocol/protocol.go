@@ -16,6 +16,9 @@ var (
 	MSG_User_Not_Exist   = &CodeState{Code: 4, Message: "user not exist"} //用户不存在
 	MSG_Param_Error   = &CodeState{Code: 5, Message: "param error"} //参数错误
 	MSG_Max_Created_Error   = &CodeState{Code: 6, Message: "max created error"} //参数错误
+
+	MSG_Unknow_Error   = &CodeState{Code: 9999, Message: "unknow error"} //参数错误
+
 	MSG_DB_Error         = &CodeState{Code: 111, Message: "db error"}     //数据库出错
 
 	//房间错误信息 1000开始标记
