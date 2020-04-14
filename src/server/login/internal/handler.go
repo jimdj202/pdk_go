@@ -21,7 +21,7 @@ func init() {
 	handler(&protocol.DeleteQinYouQuan{},handlerDeleteQinYouQuan)
 	handler(&protocol.JoinQinYouQuan{},handlerJoinQinYouQuan)
 	handler(&protocol.LeaveQinYouQuan{},handlerLeaveQinYouQuan)
-
+	handler(&protocol.GetAllQinYouQuan{},handlerGetAllQinYouQuan)
 }
 
 func handler(m interface{}, h interface{}) {
@@ -202,5 +202,25 @@ func handlerLeaveQinYouQuan(args []interface{}){
 	msg := &protocol.LeaveQinYouQuanResp{Uid: m.Uid,Qid: m.Qid}
 	a.WriteMsg(msg)
 
+}
+
+func handlerGetAllQinYouQuan(args []interface{}){
+	// 收到的消息
+	m := args[0].(*protocol.GetAllQinYouQuan)
+	// 消息的发送者
+	a := args[1].(gate.Agent)
+	if m.Uid < 1  {
+		a.WriteMsg(protocol.MSG_Param_Error)
+		return
+	}
+
+	modelQ := &model.QinYouQuan{Uid: m.Uid}
+	qs,err := modelQ.FindAllByUid()
+	if err != nil {
+		a.WriteMsg(protocol.MSG_DB_Error)
+	}
+	res := &protocol.GetAllQinYouQuanResp{List: *qs}
+	a.WriteMsg(res)
+	
 }
 

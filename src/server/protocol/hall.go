@@ -1,5 +1,7 @@
 package protocol
 
+import "pdk/src/server/model"
+
 // 版本号
 type Version struct {
 	Version string
@@ -81,6 +83,14 @@ type LeaveQinYouQuan struct {
 	Uid uint32
 }
 
+type GetAllQinYouQuan struct {
+	Uid uint32
+}
+
+type GetAllQinYouQuanResp struct {
+	List []model.QinYouQuan
+}
+
 type LeaveQinYouQuanResp struct {
 	Qid uint32
 	Uid uint32
@@ -103,5 +113,7 @@ func init() {
 	Processor.Register(&JoinQinYouQuanResp{})
 	Processor.Register(&LeaveQinYouQuan{})
 	Processor.Register(&LeaveQinYouQuanResp{})
+	Processor.Register(&GetAllQinYouQuan{})
+
 
 }
