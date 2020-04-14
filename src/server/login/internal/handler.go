@@ -221,6 +221,6 @@ func handlerGetAllQinYouQuan(args []interface{}){
 	}
 	res := &protocol.GetAllQinYouQuanResp{List: *qs}
 	a.WriteMsg(res)
-	
+
 }
 

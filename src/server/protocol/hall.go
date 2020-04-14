@@ -114,6 +114,6 @@ func init() {
 	Processor.Register(&LeaveQinYouQuan{})
 	Processor.Register(&LeaveQinYouQuanResp{})
 	Processor.Register(&GetAllQinYouQuan{})
-
+	Processor.Register(&GetAllQinYouQuanResp{})
 
 }

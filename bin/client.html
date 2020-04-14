@@ -62,6 +62,11 @@
     <output id="leaveQinYouQuan"></output>
 </p>
 
+<p>
+    <button onclick="getAllQinYouQuan()">getAllQinYouQuan</button>
+    <output id="getAllQinYouQuan"></output>
+</p>
+
 <script type="text/javascript">
     var ws = new WebSocket('ws://127.0.0.1:3653')
     ws.onopen = function () {
@@ -285,7 +290,27 @@
             }
         }
     }
+    function getAllQinYouQuan() {
+        var msg = {
+            GetAllQinYouQuan: {
+                Uid: 455749,
+                Qid: 918634,
+            }
+        }
+        var m = JSON.stringify(msg)
+        console.log("send data:  ", m);
+        ws.send(m)
 
+        ws.onmessage = function (evt) {
+            var re = evt.data;
+            var reader = new FileReader()
+            reader.readAsText(re)
+            reader.onload = function () {
+                console.log(this.result);
+                document.getElementById("getAllQinYouQuan").innerHTML = this.result;
+            }
+        }
+    }
 </script>
 </body>
 </html>
