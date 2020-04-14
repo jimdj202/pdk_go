@@ -30,7 +30,7 @@ func OnMessageCreateRoom(args []interface{}){
 
 		return
 	}
-	a.WriteMsg(&protocol.CreateRoomResp{})
+	a.WriteMsg(&protocol.MSG_Max_Created_Error)
 }
 
 func OnMessage(args []interface{}) {

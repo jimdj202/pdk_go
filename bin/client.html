@@ -82,6 +82,7 @@
 
         ws.onmessage = function (evt) {
             var re = evt.data;
+            console.log(re)
             var reader = new FileReader()
             reader.readAsText(re)
             reader.onload = function () {
@@ -303,6 +304,7 @@
 
         ws.onmessage = function (evt) {
             var re = evt.data;
+
             var reader = new FileReader()
             reader.readAsText(re)
             reader.onload = function () {
