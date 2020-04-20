@@ -3,7 +3,8 @@ package common
 import (
 	"errors"
 	"github.com/name5566/leaf/gate"
-	"pdk/src/server/algorithm"
+	"pdk/src/server/algorithm/dezhou"
+
 	//"pdk/src/server/game/internal"
 	"pdk/src/server/model"
 	"time"
@@ -13,7 +14,7 @@ type Occupant struct {
 	*model.User
 	gate.Agent
 	Room   IRoom
-	Cards  algorithm.Cards
+	Cards  dezhou.Cards
 	Pos    uint8 // 玩家座位号，从1开始
 	Status int32 // 1为离线状态
 

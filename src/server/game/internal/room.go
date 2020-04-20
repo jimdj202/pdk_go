@@ -2,7 +2,7 @@ package internal
 
 import (
 	"github.com/golang/glog"
-	"pdk/src/server/algorithm"
+	"pdk/src/server/algorithm/dezhou"
 	"pdk/src/server/common"
 	"pdk/src/server/model"
 	"pdk/src/server/protocol"
@@ -27,15 +27,15 @@ type Room struct {
 	n      uint8
 	status uint8
 
-	SB       uint32          // 小盲注
-	BB       uint32          // 大盲注
-	Cards    algorithm.Cards // 公共牌
-	Pot      []uint32        // 奖池筹码数, 第一项为主池，其他项(若存在)为边池
-	Timeout  time.Duration   // 倒计时超时时间(秒)
-	Button   uint8           // 当前庄家座位号，从1开始
-	Chips    []uint32        // 玩家本局下注的总筹码数，与occupants一一对应
-	Bet      uint32          // 当前回合 上一玩家下注额
-	Max      uint8           // 房间最大玩家人数
+	SB       uint32        // 小盲注
+	BB       uint32        // 大盲注
+	Cards    dezhou.Cards  // 公共牌
+	Pot      []uint32      // 奖池筹码数, 第一项为主池，其他项(若存在)为边池
+	Timeout  time.Duration // 倒计时超时时间(秒)
+	Button   uint8         // 当前庄家座位号，从1开始
+	Chips    []uint32      // 玩家本局下注的总筹码数，与occupants一一对应
+	Bet      uint32        // 当前回合 上一玩家下注额
+	Max      uint8         // 房间最大玩家人数
 	MaxChips uint32
 	MinChips uint32
 }

@@ -1,8 +1,8 @@
-package algorithm
+package dezhou
 
 import (
-	"strings"
 	"fmt"
+	"strings"
 )
 
 func (this *Cards) Bytes() []byte {

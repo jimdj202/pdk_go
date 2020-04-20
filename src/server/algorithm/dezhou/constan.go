@@ -1,4 +1,4 @@
-package algorithm
+package dezhou
 
 // 扑克牌52张，分别包含普通牌52张 2-10、J、Q、K、A （以上每种牌4个花色 黑桃、梅花、红心、方块）
 var CARDS = []byte{

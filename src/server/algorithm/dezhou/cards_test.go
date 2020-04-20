@@ -1,24 +1,24 @@
-package algorithm
+package dezhou
 
 import (
-	"testing"
-	"strings"
 	"github.com/stretchr/testify/assert"
+	"strings"
+	"testing"
 )
 
 func TestFour(t *testing.T) {
 	cards := Cards{0x12, 0x02, 0x22, 0xb, 0x1b, 0x7, 0x32}
-	k,_:=De(cards.GetType())
+	k,_:= De(cards.GetType())
 	assert.Equal(t, k, FOUR)
 
 	cards = Cards{0x12, 0x02, 0x22, 0x32}
-	k,_=De(cards.GetType())
+	k,_= De(cards.GetType())
 	assert.Equal(t, k, FOUR)
 }
 
 func TestThree(t *testing.T) {
 	cards := Cards{0x12, 0x02, 0x22, 0x3a, 0x2a, 0x1a, 0x33}
-	k,_:=De(cards.GetType())
+	k,_:= De(cards.GetType())
 	assert.Equal(t, k, FULL_HOUSE)
 
 }
@@ -67,7 +67,7 @@ func TestCards_Flush(t *testing.T) {
 	cards := Cards{0x32, 0x33, 0x34, 0x35, 0x26, 0x37, 0x28}
 
 	k, _ := De(cards.GetType())
-	assert.Equal(t, k,FLUSH)
+	assert.Equal(t, k, FLUSH)
 	//assert.Equal(t, v, uint32(6))
 }
 

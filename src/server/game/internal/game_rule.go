@@ -2,7 +2,7 @@ package internal
 
 import (
 	"github.com/golang/glog"
-	"pdk/src/server/algorithm"
+	"pdk/src/server/algorithm/dezhou"
 	"pdk/src/server/common"
 	"pdk/src/server/lib/utils"
 	"pdk/src/server/model"
@@ -77,9 +77,9 @@ func (r *Room) start() {
 	// Round 1 : preflop
 	r.ready()
 	r.Each(0, func(o *common.Occupant) bool {
-		o.Cards = algorithm.Cards{r.Cards.Take(), r.Cards.Take()}
+		o.Cards = dezhou.Cards{r.Cards.Take(), r.Cards.Take()}
 
-		kind, _ := algorithm.De(o.Cards.GetType())
+		kind, _ := dezhou.De(o.Cards.GetType())
 		m := &protocol.PreFlop{
 			Cards: o.Cards.Bytes(),
 			Kind:  kind,
@@ -98,11 +98,11 @@ func (r *Room) start() {
 
 	// Round 2 : Flop
 	r.ready()
-	r.Cards = algorithm.Cards{r.Cards.Take(), r.Cards.Take(), r.Cards.Take()}
+	r.Cards = dezhou.Cards{r.Cards.Take(), r.Cards.Take(), r.Cards.Take()}
 	r.Each(0, func(o *common.Occupant) bool {
 		cs := r.Cards.Append(o.Cards...)
 
-		kind, _ := algorithm.De(cs.GetType())
+		kind, _ := dezhou.De(cs.GetType())
 		m := &protocol.Flop{
 			Cards: cs.Bytes(),
 			Kind:  kind,
@@ -124,7 +124,7 @@ func (r *Room) start() {
 	r.Cards = r.Cards.Append(r.Cards.Take())
 	r.Each(0, func(o *common.Occupant) bool {
 		cs := r.Cards.Append(o.Cards...)
-		kind, _ := algorithm.De(cs.GetType())
+		kind, _ := dezhou.De(cs.GetType())
 		m := &protocol.Turn{
 			Card: r.Cards[3],
 			Kind: kind,
@@ -147,7 +147,7 @@ func (r *Room) start() {
 	r.Each(0, func(o *common.Occupant) bool {
 		cs := r.Cards.Append(o.Cards...)
 		value := cs.GetType()
-		kind, _ := algorithm.De(value)
+		kind, _ := dezhou.De(value)
 		m := &protocol.River{
 			Card: r.Cards[4],
 			Kind: kind,

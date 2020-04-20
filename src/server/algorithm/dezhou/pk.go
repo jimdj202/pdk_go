@@ -1,4 +1,4 @@
-package algorithm
+package dezhou
 
 func (this *Cards) Counter() *ValueCounter {
 	var counter ValueCounter

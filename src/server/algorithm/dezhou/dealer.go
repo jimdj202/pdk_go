@@ -1,8 +1,8 @@
-package algorithm
+package dezhou
 
 import (
-	"time"
 	"math/rand"
+	"time"
 )
 
 

@@ -1,9 +1,9 @@
-package algorithm
+package dezhou
 
 import (
-	"testing"
-	"strings"
 	"github.com/stretchr/testify/assert"
+	"strings"
+	"testing"
 )
 
 func TestFlush1(t *testing.T) {

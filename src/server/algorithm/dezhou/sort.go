@@ -1,4 +1,4 @@
-package algorithm
+package dezhou
 
 // 对牌值从小到大排序，采用快速排序算法
 func SortCards(arr []byte, start, end int8) {
