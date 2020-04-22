@@ -303,3 +303,9 @@ func Test_turnToValue(t *testing.T) {
 	t.Logf("%v ", ToValue([]byte{0x33, 0x35, 0x25, 0x35, 0x28}))
 
 }
+
+func Test_And(t *testing.T){
+	card1 := 0x18
+	val := card1 & 0x0f
+	t.Log(val)
+}
