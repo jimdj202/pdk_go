@@ -8,13 +8,13 @@ var StraightMask = []uint16{15872, 7936, 3968, 1984, 992, 496, 248, 124, 62, 31}
 
 func (c Card) getCardIndex() int{
 	cardValue := c & 0x0f
-	if cardValue == 0x01 {
-		return 14
-	}else if cardValue == 0x02{
+	//if cardValue == 0x01 {
+	//	return 14
+	/*}else*/ if cardValue == 0x02{
 		return 16
-	}else if cardValue == 0x0e{
+	}else if cardValue == 0x0e{ //小王
 		return 17
-	}else if cardValue == 0x0f{
+	}else if cardValue == 0x0f{ //大王
 		return 18
 	}
 	return int(cardValue)
@@ -27,9 +27,24 @@ func (c *Cards) getType(){
 		tempCards[vIndex] = tempCards[vIndex] + 1 //
 	}
 
-	//counts := Cards{0,0,0,0} //--1,2,3,4组合的数目
-	//cards := Cards{} //数目分别为1,2,3,4的牌的序列
+	counts := []int{0,0,0,0,0} //--1,2,3,4组合的数目
+	cards := []Cards{{},{},{},{},{}} //数目分别为1,2,3,4的牌的序列
+	for i,v := range tempCards{
+		if v > 0 {
+			counts[i] = counts[i] +1
+			cards[v] = append(cards[v], Card(i))
+		}
+	}
 
+	if counts[4] > 0 {
+
+	}else if counts[3] > 0 {
+
+	}else if counts[2] > 0 {
+
+	}else if counts[1] > 0{
+
+	}
 
 }
 
