@@ -3,7 +3,8 @@ package pdk
 const iota = 0
 
 const (
-	TYPE_ONE uint8 = iota //单张
+	TYPE_ERROR uint8 = iota //error
+	TYPE_ONE //单张
 	TYPE_SHUN_Zi   //顺子
 	TYPE_DUI_Zi  //对子
 	TYPE_LIAN_DUI  //连对

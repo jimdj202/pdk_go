@@ -31,7 +31,7 @@ func (c *Cards) getType(){
 	cards := []Cards{{},{},{},{},{}} //数目分别为1,2,3,4的牌的序列
 	for i,v := range tempCards{
 		if v > 0 {
-			counts[i] = counts[i] +1
+			counts[v] = counts[v] +1
 			cards[v] = append(cards[v], Card(i))
 		}
 	}

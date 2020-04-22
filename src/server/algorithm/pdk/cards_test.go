@@ -10,9 +10,9 @@ func Test_Card(t *testing.T) {
 	t.Log(cc.getCardIndex())
 
 	cList := Cards{0x03,0x04,0x05,0x06,0x07}
-	ret := cList.straight()
-	t.Log(ret)
-
+	//ret := cList.straight()
+	//t.Log(ret)
+	cList.getType()
 }
 
 
