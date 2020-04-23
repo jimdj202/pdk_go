@@ -15,5 +15,11 @@ func Test_Card(t *testing.T) {
 	cList.getType()
 }
 
+func Test_Card1(t *testing.T){
+	cards := &Cards{0x13,0x23,0x33,0x43}
+	ret := cards.getType()
+	t.Log(ret)
+}
+
 
 

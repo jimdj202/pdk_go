@@ -1,6 +1,6 @@
 package pdk
 
-const iota = 0
+//const iota = 0
 
 const (
 	TYPE_ERROR uint8 = iota //error

@@ -30,7 +30,7 @@ func (c Card) getCardIndex() int{
 	return int(cardValue)
 }
 
-func (c *Cards) getType(){
+func (c *Cards) getType() CardType{
 	tempCards := Cards{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}  //-a-k  大小王  15张序列
 	for _,v := range *c {
 		vIndex := v.getCardIndex()
@@ -38,7 +38,7 @@ func (c *Cards) getType(){
 	}
 
 	counts := []int{0,0,0,0,0} //--1,2,3,4组合的数目
-	var cards []Cards          //数目分别为1,2,3,4的牌的序列
+	cards := []Cards{{},{},{},{},{}}         //数目分别为1,2,3,4的牌的序列
 	for i,v := range tempCards{
 		if v > 0 {
 			counts[v] = counts[v] +1
@@ -47,15 +47,15 @@ func (c *Cards) getType(){
 	}
 
 	if counts[4] > 0 {
-
+		return getType4(counts,cards)
 	}else if counts[3] > 0 {
-
+		return getType3(counts,cards)
 	}else if counts[2] > 0 {
-
+		return getType2(counts,cards)
 	}else if counts[1] > 0{
-
+		return getType1(counts,cards)
 	}
-
+	return CardTypeError
 }
 
 func getType4(counts []int,cards []Cards) CardType{
@@ -161,7 +161,7 @@ func getType1(counts []int,cards []Cards) CardType{
 
 	if count == 2 {
 		//王炸
-		if cards[1][0] == 0x4e && cards[1][1] == 0x4f {
+		if cards[1][0] == 0x5e && cards[1][1] == 0x5f {
 			return CardType{Type: TYPE_DOUBLE_KING,MainCards: cards[1]}
 		}
 	}
