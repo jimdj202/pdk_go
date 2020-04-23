@@ -4,6 +4,16 @@ type Cards []Card
 
 type Card byte
 
+type CardType struct {
+	Type uint8
+	OriginCards []Card
+	MainCards []Card `主牌型比如555`
+	ExtraCards []Card `带的牌  比如三代二 二`
+	Count int
+}
+
+var CardTypeError = CardType{Type: TYPE_ERROR}
+
 var StraightMask = []uint16{15872, 7936, 3968, 1984, 992, 496, 248, 124, 62, 31}
 
 func (c Card) getCardIndex() int{
@@ -21,14 +31,14 @@ func (c Card) getCardIndex() int{
 }
 
 func (c *Cards) getType(){
-	tempCards := Cards{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}  //-a-k  大小王  15张序列
+	tempCards := Cards{0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}  //-a-k  大小王  15张序列
 	for _,v := range *c {
 		vIndex := v.getCardIndex()
 		tempCards[vIndex] = tempCards[vIndex] + 1 //
 	}
 
 	counts := []int{0,0,0,0,0} //--1,2,3,4组合的数目
-	cards := []Cards{{},{},{},{},{}} //数目分别为1,2,3,4的牌的序列
+	var cards []Cards          //数目分别为1,2,3,4的牌的序列
 	for i,v := range tempCards{
 		if v > 0 {
 			counts[v] = counts[v] +1
@@ -46,6 +56,58 @@ func (c *Cards) getType(){
 
 	}
 
+}
+
+func getType4(counts []int,cards []Cards) CardType{
+	if counts[4] >1{
+		return CardTypeError
+	}
+
+	//飞机
+	if counts[3] > 1{
+		if !isContinue(cards[3]) {
+			return CardTypeError
+		}
+		if counts[3] == 4 {
+			if counts[2] + counts[1] != 0 {
+				return CardTypeError
+			}
+			return CardType{Type: TYPE_FEI_JI_1,MainCards: cards[3],Count: counts[3]}
+		}else if counts[3] == 2 + counts[2] && counts[1] == 0 {
+			return CardType{Type: TYPE_FEI_JI_2,MainCards: cards[3],Count: counts[3]}
+		}
+		return CardTypeError
+	}
+
+	sum := counts[3] + counts[2] + counts[1]
+	if sum > 1 {
+		return CardTypeError
+	}
+
+	//card := cards[4][0]
+	if sum == 0 {
+		return CardType{Type: TYPE_SI_GE,MainCards: cards[4]}
+	}
+	if counts[3] ==1 {
+		return CardType{Type: TYPE_SI_GE_3,MainCards: cards[4]}
+	}else if counts[2] == 1 {
+		return CardType{Type: TYPE_SI_GE_2,MainCards: cards[4]}
+	}else if counts[1] == 1 {
+		return CardType{Type: TYPE_SI_GE_1,MainCards: cards[4]}
+	}
+
+	return CardTypeError
+}
+
+func isContinue(cards Cards) bool{
+	var card Card
+	for _,v := range cards{
+		if card > 0 && card + 1 != v {
+			return  false
+		}
+		card = v
+	}
+	return true
 }
 
 //func (this *Cards) straight() uint32 {
