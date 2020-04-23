@@ -99,6 +99,75 @@ func getType4(counts []int,cards []Cards) CardType{
 	return CardTypeError
 }
 
+func getType3(counts []int,cards []Cards) CardType{
+	//card := cards[3][len(cards[3])-1] //结尾的牌是多少
+	count3 := counts[3]
+	count2 := counts[2]
+	count1 := counts[1]
+	sum := count3 + count2 + count1
+	//三带一，或三带二，三个不带
+	if count3 == 1 {
+		if count2 ==1 && count1 == 0 {
+			return CardType{Type: TYPE_SAN_GE_2,MainCards: cards[3]}
+		}else if count2 == 0 && count1 == 1 {
+			return CardType{Type: TYPE_SAN_GE_1,MainCards: cards[3]}
+		}else if count2 == 0 && count1 == 0 {
+			return CardType{Type: TYPE_SAN_GE,MainCards: cards[3]}
+		}
+	}
+	if isContinue(cards[3]) {
+		if sum%4 == 0 {
+			return CardType{Type: TYPE_FEI_JI_1,MainCards: cards[3]}
+		}else if sum % 5 == 0 && count1 == 0 {
+			return CardType{Type: TYPE_FEI_JI_2,MainCards: cards[3]}
+		}else if count2 == 0 && count1 == 0 {
+			return CardType{Type: TYPE_FEI_JI,MainCards: cards[3]}
+		}
+	}
+	//--如 444555666999   三带一飞机
+	if count3 == 4 {
+		cardsNotFirst := cards[3][1:4]
+		cardsNotLast := cards[3][:3]
+		if isContinue(cardsNotFirst) || isContinue(cardsNotLast) {
+			return CardType{Type: TYPE_FEI_JI_1,MainCards: cards[3]}
+		}
+	}
+	return CardTypeError
+}
+
+func getType2(counts []int,cards []Cards) CardType{
+	if counts[1] > 0 {
+		return CardTypeError
+	}
+	//card := cards[2][0]
+	if counts[2] == 1 {
+		return CardType{Type: TYPE_DUI_Zi,MainCards: cards[2]}
+	}
+	if !isContinue(cards[2]){
+		return CardTypeError
+	}
+
+	return CardType{Type: TYPE_LIAN_DUI,MainCards: cards[2]}
+}
+
+func getType1(counts []int,cards []Cards) CardType{
+	count := counts[1]
+	if count < 5 && count != 2{
+		return CardTypeError
+	}
+	if !isContinue(cards[1]){
+		return CardTypeError
+	}
+
+	if count == 2 {
+		//王炸
+		if cards[1][0] == 0x4e && cards[1][1] == 0x4f {
+			return CardType{Type: TYPE_DOUBLE_KING,MainCards: cards[1]}
+		}
+	}
+	return CardType{Type: TYPE_SHUN_Zi,MainCards: cards[1]}
+}
+
 func isContinue(cards Cards) bool{
 	var card Card
 	for _,v := range cards{
@@ -136,4 +205,5 @@ func isContinue(cards Cards) bool{
 //	v1 := v | ( uint32(t) << 24)
 //	return v1
 //}
+
 
