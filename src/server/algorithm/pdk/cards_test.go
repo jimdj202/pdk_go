@@ -2,6 +2,8 @@ package pdk
 
 import "testing"
 
+type IntList []int
+
 func Test_Card(t *testing.T) {
 	c := Card(0x18)
 	var cc Card
@@ -19,7 +21,15 @@ func Test_Card1(t *testing.T){
 	cards := &Cards{0x13,0x23,0x33,0x43}
 	ret := cards.getType()
 	t.Log(ret)
+
+
 }
 
+func Test_List(t *testing.T){
+	ttt := []IntList{}
+	t.Log(ttt)
+	ttt2 := []IntList{{}}
+	t.Log(ttt2)
+}
 
 
