@@ -39,7 +39,8 @@ func (this *Cards) Equal(cards []Card) bool {
 	return true
 }
 func Color(color Card) (char string) {
-	switch color {
+	colorType := color >> 4
+	switch colorType {
 	case 0:
 		char = "♦"
 	case 1:

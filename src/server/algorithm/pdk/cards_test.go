@@ -32,4 +32,13 @@ func Test_List(t *testing.T){
 	t.Log(ttt2)
 }
 
+func Test_Or(t *testing.T){
+	t1 := 0x12
+	tf := 0xf0
+	a:= t1 & tf
+	b :=  0x12 >> 2
+	t.Log(a)
+	t.Log(b)
+}
+
 
