@@ -38,6 +38,11 @@ func (this *Cards) Equal(cards []Card) bool {
 	}
 	return true
 }
+
+func (c *Card) GetIndexValue() Card{
+	return *c & 0x0f
+}
+
 func Color(color Card) (char string) {
 	colorType := color >> 4
 	switch colorType {
