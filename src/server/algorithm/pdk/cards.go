@@ -1,5 +1,10 @@
 package pdk
 
+import (
+	"math/rand"
+	"time"
+)
+
 type Cards []Card
 
 type Card byte
@@ -206,4 +211,17 @@ func isContinue(cards Cards) bool{
 //	return v1
 //}
 
+func (c *Cards) Shuffle(){
+	total := len(CARDS)
+	*c = make([]Card,total )
+	copy(*c, CARDS)
+	source := rand.NewSource(time.Now().UnixNano() )
+	//n ++
+	//n %=a
+	r := rand.New(source)
+	for i := total - 1; i > 0; i-- {
+		index := r.Int() % i
+		(*c)[i], (*c)[index] = (*c)[index], (*c)[i]
+	}
+}
 
